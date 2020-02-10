@@ -94,22 +94,24 @@ Questions:
 
 # Outline of Analyst topics by Arnold
 
+See https://docs.google.com/document/d/1xNMRerWwILcOW_WXBSXqWor95K8Kgk6N_JANuFeDmkc/edit#
+
 b. Users
 
-1.                           What is Aircloak
-2.                           Anonymity
-3.                           What is anonymity?
-4.                           How does Aircloak define / implement it?
-5.                           Consequences & Effects & Restrictions
+1.                            What is Aircloak
+2.                            Anonymity
+3.                            What is anonymity?
+4.                            How does Aircloak define / implement it?
+5.                            Consequences & Effects & Restrictions
     a. NOISE -> NOISE-functions
     b. Hidden data -> no way to find out
     c. KPI Outliers
     d. k-Anonymity
     e. No data persistence during Aircloaks operations
-6.                           How to get access? -> TEF
-7.                           Web
-8.                           PostgreSQL
-9.                           TEF process
+6.                            How to get access? -> TEF
+7.                            Web
+8.                            PostgreSQL
+9.                            TEF process
 10.       Querying
 11.       User-ids in depth
 12.       Process
