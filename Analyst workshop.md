@@ -112,3 +112,8 @@ Questions:
 - Internal handbook with Telefonica specific gotchas and learnings
 - How to find help (the docs)
   – 1st level support at Telefonica, 2nd level support at Aircloak
+
+# Auxiliary
+
+Google docs with original outlines by Arnold as well as some notes can be found here:
+https://docs.google.com/document/d/1xNMRerWwILcOW_WXBSXqWor95K8Kgk6N_JANuFeDmkc/edit#
