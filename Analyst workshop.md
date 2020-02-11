@@ -28,15 +28,21 @@ the only one that needs to be adapted per customer.
 - Introduction
   - quick round around the room, names + roles
 - What is Aircloak?
+  - Query proxy
+  - Accessible through web interface, and Postgres interface
 - What is anonymization?
   vs pseudonymization
   vs data masking
 - Anonymization and Aircloak
+  - "Per-user"-anonymization
   - Low count filtering
+    - Sometimes you will know, othertimes you will not
   - Effect of high dimensionality
     - Implicit dimension [isCustomer = true] makes even non-sensitive looking tuples like `(surname, age)` sensitive
     - Aggregation and related suppression
+      - Outlier suppression
       - Noise functions and their limitations
+      - Suppression we cannot tell you about
 
 ## Session 2
 
@@ -45,6 +51,8 @@ the only one that needs to be adapted per customer.
 - Quick overview over functionality
   - Point to docs capabilities slide
   - Show how to find the "User guides"
+  - Differences to Oracle SQL
+    - No WINDOW function support
 - Aggregates
   - `null`-values
     - When, why
@@ -66,15 +74,23 @@ the only one that needs to be adapted per customer.
 - Restrictions
   - Limited OR-functionality
   - Ranges
+    - How to work with them
+    - Date ranges
   - other...
 
 ## Session 3
 
-This is supposed to be a practical session.
-Unclear what the goal is.
-Should be sufficiently complex that it requires multiple
-queries to get to the solution, and such that it involves
-the different aspects we have learnt.
+- Explain how they get access
+  - Using BlaBla account
+    This is supposed to be a practical session.
+    Unclear what the goal is.
+    Should be sufficiently complex that it requires multiple
+    queries to get to the solution, and such that it involves
+    the different aspects we have learnt.
+
+This session is very much dependent on the data we have
+available for analysis. We should create an interesting
+use case around the particular data.
 
 Questions:
 
@@ -83,76 +99,16 @@ Questions:
 
 ## Session 4 – Aircloak and you (practical details)
 
+- TEF: How to get access to a data source: Jira ticket
+- TEF: How to add new data
+- How does one access?
+  - Web interface (as used throughout)
+  - PSQL interface
+    - Show python example code
+    - Oracle DB Link / DB Gateway
+  - Web API
+- Debug exports / Enable debug mode
 - Working around missing features with views in Oracle
-- How to get access to a data source: Jira ticket
 - Internal handbook with Telefonica specific gotchas and learnings
 - How to find help (the docs)
   – 1st level support at Telefonica, 2nd level support at Aircloak
-- PSQL interface
-  - Query from python
-  - Oracle DB Link / DB Gateway
-
-# Outline of Analyst topics by Arnold
-
-See https://docs.google.com/document/d/1xNMRerWwILcOW_WXBSXqWor95K8Kgk6N_JANuFeDmkc/edit#
-
-b. Users
-
-1.                            What is Aircloak
-2.                            Anonymity
-3.                            What is anonymity?
-4.                            How does Aircloak define / implement it?
-5.                            Consequences & Effects & Restrictions
-    a. NOISE -> NOISE-functions
-    b. Hidden data -> no way to find out
-    c. KPI Outliers
-    d. k-Anonymity
-    e. No data persistence during Aircloaks operations
-6.                            How to get access? -> TEF
-7.                            Web
-8.                            PostgreSQL
-9.                            TEF process
-10.       Querying
-11.       User-ids in depth
-12.       Process
-    a. Aircloak-Query
-    b. Database
-    c. Ingest
-    d. Process
-13.       Aircloak SQL
-    a. Syntax
-    b. Available clauses: SELECT, FROM, WHERE, GROUP BY, HAVING
-    c. Scalar-Functions overview
-    d. Aggregation
-    e. Kinds of Queries
-    i. Standard-Queries
-    ii. Restricted-Queries
-    iii. Anonymizing-Queries
-    f. Date arithmetics
-    g. Difference to ORACLE SQL / Current shortcomings
-    i. Syntax
-    ii. No analytic functions
-    iii. DATE range
-14.       How to read results? Understanding results.
-    a. COUNTS(*) == 2
-    b. Differences to unprotected queries?
-    c. Hidden data
-    d. *NOISE functions
-15.       Performance, accuracy
-    a. HAVING is processed in Aircloak
-    b. Aggregate as much as possible in ORACLE
-16.       Aircloak Views and Aircloak tables (CTAS)
-17.       Workarounds for missing features
-    a. How to define views which can be included?
-    b. How to have feature x…?
-18.       How to access results
-19.       Csv
-20.       History
-21.       DB-Link (if available)
-22.       Postgres-Port
-23.       PL/SQL example (only if DB-Link available)
-24.       Python scripting example
-25.       Extending data source
-26.       Which tables can be integrated?
-27.       How -> TEF process
-28.       Support-process -> TEF
