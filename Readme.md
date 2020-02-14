@@ -21,3 +21,10 @@ specified in the [.tool-versions](.tool-versions) file and is managed
 through the [asdf version manager](https://github.com/asdf-vm/asdf).
 Please install `asdf` along with the [nodejs](https://github.com/asdf-vm/asdf-nodejs) and [yarn](https://github.com/twuni/asdf-yarn) plugins.
 Then run `asdf install` at the root of the directory to get the necessary setup.
+
+## Show slides
+
+In the `slides-server` folder run:
+
+- `yarn install` to install the dependencies
+- `yarn start` to render the slides and start a webserver to show them
