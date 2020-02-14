@@ -24,17 +24,18 @@ the only one that needs to be adapted per customer.
 
 ## Session 1
 
-- Agenda – what will we be doing?
-- Introduction
+- delayed start ... [5 minutes]
+- Welcome and agenda – what will we be doing? – [2 minutes]
+- Introduction - [5 minutes]
   - quick round around the room, names + roles
-- What is Aircloak?
+- What is Aircloak? [3 minutes]
   - Query proxy
   - Accessible through web interface, and Postgres interface
-- What is anonymization?
+- What is anonymization? [5 minutes]
   vs pseudonymization
   vs data masking
   cautionary tales
-- Anonymization and Aircloak
+- Anonymization and Aircloak [13 minutes]
   - "Per-user"-anonymization
   - Low count filtering
     - Sometimes you will know, othertimes you will not
@@ -44,35 +45,37 @@ the only one that needs to be adapted per customer.
       - Outlier suppression
       - Noise functions and their limitations
       - Suppression we cannot tell you about
-- User id selection
+- User id selection [12 minutes]
   - keys
   - query types: unrestricted, restrited, anonymizing
     - Quizzes to hammer in the different query types
 
 ## Session 2
 
-- `SELECT *`
-- `SELECT ... LIMIT 10`
-- Quick overview over functionality
+- Common pitfalls [2 minutes]
+  - `SELECT *`
+  - `SELECT ... LIMIT 10`
+- Quick overview over functionality [10 minutes]
   - Point to docs capabilities slide
   - Show how to find the "User guides"
   - Differences to Oracle SQL
     - No WINDOW function support
-- Aggregates
+- Missing data [5 minutes]
+  - noticing the presence of `*`
+    - what does it mean? (i.e. semantic is aggregate dependent)
+  - regrouping with: `bucket`, `date_trunc`, `left`/`substring`
+- Aggregates [7 minutes]
   - `null`-values
     - When, why
   - `_noise`
     - must be used the same way
     - how it can be used with `HAVING` for data quality
-- Missing data
-  - noticing the presence of `*`
-    - what does it mean? (i.e. semantic is aggregate dependent)
-  - regrouping with: `bucket`, `date_trunc`, `left`/`substring`
-- Working with free form text
-- Building co-horts using sub-queries
-- Using Views to reuse logic
-- Use CTAS to speed up queries
-- Restrictions
+    - the noise we cannot tell you about
+- Working with free form text [3 minutes]
+- Building co-horts using sub-queries [4 minutes]
+- Using Views to reuse logic [2 minutes]
+- Use CTAS to speed up queries [2 minutes]
+- Restrictions [10 minutes]
   - Limited OR-functionality
   - Ranges
     - How to work with them
@@ -81,13 +84,18 @@ the only one that needs to be adapted per customer.
 
 ## Session 3
 
-- Explain how they get access
-  - Using BlaBla account
-    This is supposed to be a practical session.
-    Unclear what the goal is.
-    Should be sufficiently complex that it requires multiple
-    queries to get to the solution, and such that it involves
-    the different aspects we have learnt.
+- Explain data model [2 minutes]
+- Explain task [3 minutes]
+- Explain how they get access [5 minutes]
+- Let them work [20 minutes]
+- Answer questions or explain how they solved it [15 minutes]
+
+* Using BlaBla account
+  This is supposed to be a practical session.
+  Unclear what the goal is.
+  Should be sufficiently complex that it requires multiple
+  queries to get to the solution, and such that it involves
+  the different aspects we have learnt.
 
 This session is very much dependent on the data we have
 available for analysis. We should create an interesting
@@ -100,19 +108,19 @@ Questions:
 
 ## Session 4 – Aircloak and you (practical details)
 
-- TEF: How to get access to a data source: Jira ticket
-- TEF: How to add new data
-- How does one access?
+- TEF: How does one access?
   - Web interface (as used throughout)
   - PSQL interface
     - Show python example code
     - Oracle DB Link / DB Gateway
-  - Web API
-- Debug exports / Enable debug mode
-- Working around missing features with views in Oracle
+  - Web API (can probably skip this...)
+- TEF: How to get access to a data source: Jira ticket
+- TEF: How to add new data
+- TEF: Working around missing features with views in Oracle
 - Internal handbook with Telefonica specific gotchas and learnings
 - How to find help (the docs)
   – 1st level support at Telefonica, 2nd level support at Aircloak
+  - Debug exports / Enable debug mode
 - Q/A and play around and ask questions if you get stuck
 
 # Auxiliary
