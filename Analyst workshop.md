@@ -33,6 +33,7 @@ the only one that needs to be adapted per customer.
 - What is anonymization?
   vs pseudonymization
   vs data masking
+  cautionary tales
 - Anonymization and Aircloak
   - "Per-user"-anonymization
   - Low count filtering
@@ -43,6 +44,10 @@ the only one that needs to be adapted per customer.
       - Outlier suppression
       - Noise functions and their limitations
       - Suppression we cannot tell you about
+- User id selection
+  - keys
+  - query types: unrestricted, restrited, anonymizing
+    - Quizzes to hammer in the different query types
 
 ## Session 2
 
@@ -64,10 +69,6 @@ the only one that needs to be adapted per customer.
     - what does it mean? (i.e. semantic is aggregate dependent)
   - regrouping with: `bucket`, `date_trunc`, `left`/`substring`
 - Working with free form text
-- User id selection
-  - keys
-  - query types: unrestricted, restrited, anonymizing
-    - Quizzes to hammer in the different query types
 - Building co-horts using sub-queries
 - Using Views to reuse logic
 - Use CTAS to speed up queries
@@ -112,6 +113,7 @@ Questions:
 - Internal handbook with Telefonica specific gotchas and learnings
 - How to find help (the docs)
   – 1st level support at Telefonica, 2nd level support at Aircloak
+- Q/A and play around and ask questions if you get stuck
 
 # Auxiliary
 
