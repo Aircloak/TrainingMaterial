@@ -11,3 +11,13 @@ specific and can therefore be used across customers.
 
 For the time being the material outline is kept in [Analyst workshop](Analyst%20workshop.md)
 and [Admin workshop](Admin%20workshop.md) respectively.
+
+# Slides
+
+## Dependencies
+
+To make the slides you need node installed. The required version has been
+specified in the [.tool-versions](.tool-versions) file and is managed
+through the [asdf version manager](https://github.com/asdf-vm/asdf).
+Please install `asdf` along with the [nodejs](https://github.com/asdf-vm/asdf-nodejs) and [yarn](https://github.com/twuni/asdf-yarn) plugins.
+Then run `asdf install` at the root of the directory to get the necessary setup.
