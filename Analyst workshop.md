@@ -52,14 +52,14 @@ the only one that needs to be adapted per customer.
 
 ## Session 2
 
-- Common pitfalls [2 minutes]
-  - `SELECT *`
-  - `SELECT ... LIMIT 10`
 - Quick overview over functionality [10 minutes]
   - Point to docs capabilities slide
   - Show how to find the "User guides"
   - Differences to Oracle SQL
     - No WINDOW function support
+- Common pitfalls [2 minutes]
+  - `SELECT *`
+  - `SELECT ... LIMIT 10`
 - Missing data [5 minutes]
   - noticing the presence of `*`
     - what does it mean? (i.e. semantic is aggregate dependent)

@@ -22,14 +22,14 @@ Telefonica – 2020
 
 ---
 
-# Introductions
+## Introductions
 
 --
 
 ## We are
 
-- Felix (legal, thought leadership)
-- Sebastian (tech)
+- Felix 
+- Sebastian 
 
 --
 
@@ -43,7 +43,7 @@ Quick round. What is your:
 
 Before we start
 
-# What is Aircloak?
+## What is Aircloak?
 
 --
 
@@ -844,3 +844,367 @@ FROM users
  <span class="fragment">
  <strong>Answer:</strong> anonymizing. Cross user aggregation (which is a grouping)
  </span>
+
+---
+
+## Break
+
+
+
+
+
+
+
+
+---
+
+## Session 2: 
+# Querying with Aircloak
+
+---
+
+## SQL
+
+Aircloak supports a subset of standard SQL.
+
+Docs are a useful resource.
+
+notes: show doc in the web interface
+
+---
+
+## Differences to Oracle 
+
+- Limited OR functionality
+- No WINDOW function support
+- Some function names differ slightly
+
+---
+
+## Differences to Oracle - truncation of timestamps
+
+- `date_trunc` for truncating for dates and times 
+
+| Oracle                  | Aircloak                 |
+|-------------------------|--------------------------|
+| trunc(c, 'year')        | date_trunc('year', c)    |
+| trunc(c, 'q')           | date_trunc('quarter', c) |
+| trunc(c, 'month')       | date_trunc('month', c)   |
+| trunc(c, 'dd')          | date_trunc('day', c)     |
+| trunc(c, 'hh')          | date_trunc('hour', c)    |
+| trunc(c, 'mi')          | date_trunc('minute', c)  |
+| cast(c as timestamp(0)) | date_trunc('second', c)  |
+
+--
+
+## Importance of `date_trunc`
+
+![Image](content/images/lcf-g4.png) <!-- .element: style="max-height:600px;border:none;" -->
+
+--
+
+## Importance of `date_trunc`
+
+![Image](content/images/lcf-g5.png) <!-- .element: style="max-height:600px;border:none;" -->
+
+--
+
+## Differences to Oracle - `bucket`
+
+- Aircloak has a `bucket` function
+- It groups values to a grid
+- It used like this: `bucket(column by gridSize)`
+
+--
+
+## Visualizing `bucket`
+
+![Image](content/images/bucket-before.png) <!-- .element: style="max-height:600px;border:none;" -->
+
+--
+
+## Visualizing `bucket`
+
+![Image](content/images/bucket-after.png) <!-- .element: style="max-height:600px;border:none;" -->
+
+--
+
+## Importance of `bucket`
+
+![Image](content/images/lcf-g4.png) <!-- .element: style="max-height:600px;border:none;" -->
+
+--
+
+## Importance of `bucket`
+
+![Image](content/images/lcf-g5.png) <!-- .element: style="max-height:600px;border:none;" -->
+
+--
+
+## Differences to Oracle 
+
+| Oracle      | Aircloak |
+|-------------|----------|
+| STDDEV_SAMP | stddev   |
+| VAR_SAMP    | variance |
+
+--
+
+## Differences to Oracle - `ilike`
+
+- Aircloak supports case insensitive LIKE
+
+| Oracle                    | Aircloak            |
+|---------------------------|---------------------|
+|       col LIKE 'pattern'  | col  LIKE 'pattern' |
+| LOWER(col) LIKE 'pattern' | col ILIKE 'pattern' |
+
+---
+
+## Common pitfalls - *
+
+```sql
+SELECT * FROM table
+```
+
+<span class="fragment">
+Remember: Aircloak suppresses column combinations that aren't shared by sufficiently many users. With `SELECT *` all rows end up identifying 
+</span>
+
+--
+
+## Common pitfalls
+
+```sql
+SELECT * FROM table
+```
+
+![Image](content/images/selectstar.png) <!-- .element: style="max-height:600px;border:none;" -->
+
+--
+
+## Common pitfalls - LIMIT X
+
+```sql
+SELECT columnA, columnB, columnC
+FROM table
+LIMIT 10
+```
+
+<span class="fragment">
+Aircloak can only determine the rows to return after the full anonymization has taken place.
+</span>
+
+---
+
+## Accounting for effects of anonymization 
+
+- Identifying information is supressed
+- Aircloak cannot tell you what this data was
+- We give you an anonymizing estimate of how much data was suppressed
+
+--
+
+## Accounting for effects of anonymization - `*`
+
+![Image](content/images/star-row.png) <!-- .element: style="max-height:600px;border:none;" -->
+
+--
+
+## Aggregates over small amounts of data
+
+| User Id | Item | Mileage  |
+|--------:|------|---------:|
+| 1       | Car  | -10      |
+| 2       | Car  | 80       |
+| 3       | Car  | 999999   |
+
+--
+
+## Aggregates over small amounts of data
+
+```sql
+SELECT item, aggregate(mileage)
+FROM items
+GROUP BY item
+```
+
+- Enough data to reveal that "Car" exists in the dataset
+- Not enough data to produce a meaningful aggregate of mileage
+
+--
+
+### What Aircloak reports
+
+| aggregate      | return value |
+|----------------|-------------:|
+| count(mileage) | 2            |
+| avg(mileage)   | null         |
+| sum(mileage)   | null         |
+| avg(mileage)   | null         |
+| max(mileage)   | null         |
+| min(mileage)   | null         |
+
+<span class="fragment">
+> This property exists in my dataset. But I CANNOT make any statistical assesment of any aggregate properties
+</span>
+
+--
+
+### count = 2?
+
+The SQL standard doesn't allow `null` as a return value for `count`. We would never report something that was not at the _very least_ shared by two or more users.
+
+Read a count of 2 as meaning: 
+
+> This property exists in my dataset. I DO NOT know for how many users.
+
+--
+
+### What about X_noise?
+
+| aggregate      | return value | _noise |
+|----------------|-------------:|-------:|
+| count(mileage) | 2            | null   |
+| avg(mileage)   | null         | null   |
+| sum(mileage)   | null         | null   |
+| avg(mileage)   | null         | null   |
+| max(mileage)   | null         | null   |
+| min(mileage)   | null         | null   |
+
+--
+
+## Filtering insignificant aggregates - low counts
+
+You can filter out aggregates that are not meaningful.
+
+```sql
+SELECT some, properties, aggregate(...)
+FROM table
+GROUP BY some, properties
+HAVING aggregate(...) > X
+```
+
+--
+
+## Filtering insignificant aggregates - low counts
+
+You can filter out aggregates that are not meaningful.
+
+```sql
+SELECT some, properties, aggregate(...)
+FROM table
+GROUP BY some, properties
+HAVING aggregate(...) > 20
+```
+
+--
+
+## Filtering insignificant aggregates - noisy results
+
+You can filter out aggregates where the noise dominates.
+
+```sql
+SELECT some, properties, aggregate(...)
+FROM table
+GROUP BY some, properties
+-- Signal to noise ratio better than X
+HAVING aggregate(...) / aggregate_noise(...) > X
+
+```
+
+--
+
+## Filtering insignificant aggregates - noisy results
+
+You can filter out aggregates where the noise dominates.
+
+```sql
+SELECT some, properties, aggregate(...)
+FROM table
+GROUP BY some, properties
+-- Signal to noise ratio better than 5
+HAVING aggregate(...) / aggregate_noise(...) > 5
+
+```
+
+---
+
+## Working with freeform text
+
+User provided text could be considered as a relatively strong pseudorandom numbger generator...
+
+```sql
+SELECT freetextColumn, ...
+FROM table
+```
+
+All results will get anonymized away
+
+--
+
+## Working with freeform text
+
+![Image](content/images/lcf-g4.png) <!-- .element: style="max-height:600px;border:none;" -->
+
+--
+
+## Extract parts of text
+
+- `substring`
+- `left`
+- `right`
+
+--
+
+## Filter based on text
+
+- `like`
+- `ilike`
+
+```sql
+SELECT some, columns, aggregates(...)
+FROM tables...
+WHERE freetextColumn ILIKE '%thank you%'
+GROUP BY ...
+```
+
+--
+
+## Building co-horts
+
+```sql
+SELECT DISTINCT userId 
+FROM table
+WHERE freetextColumn ILIKE '%thank you%'
+```
+
+--
+
+## Building co-horts
+
+```sql
+SELECT some, columns, aggregates(...)
+FROM table INNER JOIN (
+  SELECT DISTINCT userId 
+  FROM table
+  WHERE freetextColumn ILIKE '%thank you%'
+) thankfulUsers ON table.userId = thankfulUsers.userId
+GROUP BY ...
+```
+
+--
+
+## Extract common logic 
+
+- into views
+- into table ("create table as select")
+
+<span class="fragment">
+Demo!
+</span>
+
+---
+
+## Restrictions
+
