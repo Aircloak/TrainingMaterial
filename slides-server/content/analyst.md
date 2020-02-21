@@ -1316,6 +1316,12 @@ First to solve the task wins a Grand Price!
 
 ---
 
+## Sample Jupyter Notebook
+
+https://download.aircloak.com/analyst-training/
+
+---
+
 # Break
 
 ---
@@ -1329,6 +1335,9 @@ First to solve the task wins a Grand Price!
 
 - Web interface: http://demucdnhkm01.dcn.de.pri.o2.com:30080
 - Postgres interface: demucdnhkm01.dcn.de.pri.o2.com:300801
+  - See sample Python notebook from practical session
+  - https://download.aircloak.com/analyst-training/
+- Documentation: http://demucdnhkm01.dcn.de.pri.o2.com:30080/docs
 
 ---
 
