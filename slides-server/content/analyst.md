@@ -172,108 +172,53 @@ CUE: Felix tell stories
 
 ---
 
-### Per-user anonymization
-
---
-
-
-### Example
-
-#### Scenario
-
-We have the knowledge that Alfred has bought an **obscure product**.
-
---
-
-These are the records of all purchases of obscure products: 
-
-| Product         |
-|-----------------|
-| Obscure product |
-| Obscure product |
-| Obscure product |
-| Obscure product |
-| Obscure product |
-
-Question: Does this dataset give us additional knowledge about Alfred? <!-- .element: class="fragment" -->
-
-Answer: hard to say... <!-- .element: class="fragment" -->
-
---
-
-| Product         | Additional info |
-|-----------------|-----------------|
-| Obscure product | red hair        |
-| Obscure product | has cancer      |
-| Obscure product | unfaithful      |
-| Obscure product | has bad breath  |
-| Obscure product | no info         |
-
-Question: Does this dataset give us additional knowledge about Alfred? <!-- .element: class="fragment" -->
-
-Answer: again it's hard to say... <!-- .element: class="fragment" -->
-
---
-
-| UserID | Product         | Additional info |
-|--------|-----------------|-----------------|
-| User 1 | Obscure product | red hair        |
-| User 2 | Obscure product | has cancer      |
-| User 3 | Obscure product | unfaithful      |
-| User 4 | Obscure product | has bad breath  |
-| User 5 | Obscure product | no info         |
-
-Question: and now? <!-- .element: class="fragment" -->
-
-Answer: Alfred could be any of these people... <!-- .element: class="fragment" -->
-
---
-
-| UserID | Product         | Additional info | Year | 
-|--------|-----------------|-----------------|------|
-| User 1 | Obscure product | red hair        | 2016 |
-| User 2 | Obscure product | has cancer      | 2017 |
-| User 3 | Obscure product | unfaithful      | 2018 |
-| User 4 | Obscure product | has bad breath  | 2019 |
-| User 5 | Obscure product | no info         | 2020 |
-
-Question: and now? <!-- .element: class="fragment" -->
-
-Answer: this might very likely allow us to deduce who Alfred is! <!-- .element: class="fragment" -->
-
---
-
-| UserID | Product         | Additional info | Year | 
-|--------|-----------------|-----------------|------|
-| User 1 | Obscure product | red hair        | 2016 |
-| User 1 | Obscure product | has cancer      | 2017 |
-| User 1 | Obscure product | unfaithful      | 2018 |
-| User 1 | Obscure product | has bad breath  | 2019 |
-| User 1 | Obscure product | no info         | 2020 |
-
-Question: and now? <!-- .element: class="fragment" -->
-
-Answer: now Alfred is very easy to identify! <!-- .element: class="fragment" -->
-
---
-
-## Morale of the story
-
-- External information is dangerous <!-- .element: class="fragment" -->
-- It's not the number of purchas**es** that determine identifiability. It's the number of purchas**ers** <!-- .element: class="fragment" -->
-- Aircloak does per user anonymization <!-- .element: class="fragment" -->
-
----
-
 ## Low count filtering
 
 --
 
-### In summary
+## Low count filtering
 
-Information shared by enough distinct users is generally safe. It gets through the filter.
+If some information is shared by enough (~5) users then it is generally:
+- safe 
+- not identifying
 
-"Enough" means ~5 (more later) <!-- .element: class="fragment" -->
+--
+
+## Scenario:
+
+You walk into a meeting room and find:
+- a mess of half-eaten food and spilled coffee
+- a notebook with the owners name written on it
+
+--
+
+## Consider the following statements:
+
+- a) 1 person was in the room
+- b) 25 people were in the room
+
+--
+
+## 1 person
+
+- You _do know_ who the owner of the notebook is
+- You know with high certainty that this person also made the mess
+
+--
+
+## 25 people
+
+- You _do know_ how the owner of the notebook is
+- You have _no knowledge_ of who made the mess
+
+--
+
+## 25 people
+
+- You _do know_ how the owner of the notebook is
+- You have _no knowledge_ of who made the mess
+
+You can hide in a crowd!
 
 --
 
@@ -281,39 +226,50 @@ Information shared by enough distinct users is generally safe. It gets through t
 
 --
 
+## Quiz
+### Scenario: We know of all purchases of an "Obscure mess remover"
+
+--
+
 ### Quiz 1 
-#### Is "Obscure product" ok to reveal? 
+#### Is "Obscure mess remover" ok to reveal? 
 
-| UserID | Product         |
-|--------|-----------------|
-| User 1 | Obscure product |
-| User 2 | Obscure product |
-| User 3 | Obscure product |
-| User 4 | Obscure product |
-| User 5 | Obscure product |
-| User 6 | Obscure product |
+| UserID | Product              |
+|-------:|----------------------|
+|      1 | Obscure mess remover |
+|      1 | Obscure mess remover |
+|      1 | Obscure mess remover |
+|      1 | Obscure mess remover |
+|      1 | Obscure mess remover |
+|      1 | Obscure mess remover |
 
-Answer: **Yes. ~5 users share the property!** <!-- .element: class="fragment" -->
+<span class="fragment">
+No. Only a single person bought the product. There is no crowd to hide in.
+</span>
 
 --
 
 ### Quiz 2
-#### Is "Obscure product" ok to reveal? 
+#### Is "Obscure mess remover" ok to reveal? 
 
-| UserID | Product         |
-|--------|-----------------|
-| User 1 | Obscure product |
-| User 1 | Obscure product |
-| User 1 | Obscure product |
-| User 1 | Obscure product |
-| User 1 | Obscure product |
-| User 1 | Obscure product |
+| UserID | Product              |
+|-------:|----------------------|
+|      1 | Obscure mess remover |
+|      2 | Obscure mess remover |
+|      3 | Obscure mess remover |
+|      4 | Obscure mess remover |
+|      5 | Obscure mess remover |
+|      6 | Obscure mess remover |
 
-Answer: **No. Only a single user share the property!** <!-- .element: class="fragment" -->
+<span class="fragment">
+Yes. ~5 users bought the product. They are all hiding in a crowd.
+</span>
 
 --
 
 ### Example: fine grained values
+
+If you have fine grained data (like for example a `timestamp`) then every value becomes an "Obscure mess remover".
 
 --
 
@@ -353,7 +309,11 @@ Answer: **No. Only a single user share the property!** <!-- .element: class="fra
 
 --
 
-## But, now, what happens if we add in say the gender?
+## What happens if we add a second category of values?
+
+- `(BirthTime, Gender)` 
+- It is more specific
+- The resulting groups are smaller
 
 --
 
@@ -361,15 +321,19 @@ Answer: **No. Only a single user share the property!** <!-- .element: class="fra
 
 --
 
-## But!
-
-Gender and birthday cannot be that identifying!?
-
-There are thousands of people born every day!
+## Tradeoff 
+### More columns, less results
 
 --
 
-## There is a hidden attribute!
+## Tradeoff 
+### More columns, less results
+
+`(zip-code, date of birth, gender)` uniquely identifies 67% of all US citizens!
+
+--
+
+## There is a hidden attribute in your queries!
 
 --
 
@@ -387,44 +351,21 @@ There are thousands of people born every day!
 
 ## But in reality it is
 
-| Gender | BirthTime              | Is our customer |
-|--------|-----------------------:|----------------:|
-| M      | 1980-01-01 12:15:01.02 | True            | 
-| M      | 1980-02-01 02:21:00.12 | True            |
-| F      | 1980-02-01 02:50:05.99 | True            |
-| ...    | ...                    | True            |
-| F      | 1980-12-30 18:30:05.19 | True            |
-
---
-
-## This implicit attribute in turn makes all the other data more identifying.
-
---
-
-| Home address | Is our customer | Count |
-|--------------|----------------:|------:|
-| Human St.    | True            | 20    |
-| Human St.    | False           | 250   |
-| Albert Av.   | True            | 50    |
-| Albert Av.   | False           | 520   |
-| My corp Av.  | True            | 204   |
-| My corp Av.  | False           | 1     |
-
---
-
-| Home address | Age | Is our customer | Count |
-|--------------|----:|----------------:|------:|
-| Human St.    | 1   | True            | 0     |
-| Human St.    | 1   | False           | 5     |
-| Human St.    | 2   | True            | 1     |
-| Human St.    | 2   | False           | 15    |
-| ...          | ... | ...             | ...   |
+| Is our customer | Gender | BirthTime              |
+|:----------------|--------|-----------------------:|
+| True            | M      | 1980-01-01 12:15:01.02 | 
+| True            | M      | 1980-02-01 02:21:00.12 |
+| True            | F      | 1980-02-01 02:50:05.99 |
+| True            | ...    | ...                    |
+| True            | F      | 1980-12-30 18:30:05.19 |
 
 --
 
 # In summary
 
-> Values (or sets of values) can only be revealed if enough _distinct users_ share them
+The more columns your query includes, the higher the chance
+- that the combination is identifying
+- that Aircloak will filter the data out as part of anonymization
 
 ---
 
@@ -432,146 +373,108 @@ There are thousands of people born every day!
 
 --
 
-## Sample `purchases` table
+### A histogram of salaries
 
-| UserID | Product   | Price   |
-|--------|-----------|--------:|
-| User 1 | Product A | 10      |
-| User 2 | Product B | 20      |
-| User 3 | Product A | 10000   |
-| User 4 | Product C | 30      |
-| User 5 | Product B | 0       |
+![Image](content/images/salaries-1.png) <!-- .element: style="max-height:600px;border:none;" -->
 
 --
 
-## count
+### Low count filter would suppress these
 
-```sql
-SELECT count(*)
-FROM products
-```
-
-- The real count is 5
-- Aircloak anonymizes and might return 6
+![Image](content/images/salaries-2.png) <!-- .element: style="max-height:600px;border:none;" -->
 
 --
 
-## count + count_noise
+### Aggregates are different
 
-```sql
-SELECT count(*), count_noise(*)
-FROM products
-```
-
-- `count_noise(X)` returns the _approximate_ standard deviation used when adding noise to `count(X)`
+![Image](content/images/salaries-3.png) <!-- .element: style="max-height:600px;border:none;" -->
 
 --
 
-## sum + sum_noise
+### How about extreme values?
 
-```sql
-SELECT sum(price), sum_noise(price)
-FROM products
-```
-
-- Produces an anonymous sum where `sum_noise` is the _approximate_ standard deviation of the noise
+![Image](content/images/salaries-4.png) <!-- .element: style="max-height:600px;border:none;" -->
 
 --
 
-## avg + avg_noise
+### How about extreme values?
 
-```sql
-SELECT avg(price), avg_noise(price)
-FROM products
-```
-
-- Produces an anonymous average where `avg_noise` is the _approximate_ standard deviation of the noise
+![Image](content/images/salaries-5.png) <!-- .element: style="max-height:600px;border:none;" -->
 
 --
 
-## stddev + stddev_noise
+### Extreme values are shifted
 
-```sql
-SELECT stddev(price), stddev_noise(price)
-FROM products
-```
-
-- Produces an anonymous standard deviation where `stddev_noise` is the _approximate_ standard deviation of the noise
+![Image](content/images/salaries-6.png) <!-- .element: style="max-height:600px;border:none;" -->
 
 --
 
-## Why the noise is approximate
+### Extreme values are shifted
 
-- The noise attempts to masque the impact of the most extreme users
-- The suppression of an extreme value should not be visible in the `_noise` value
-
---
-
-## Consider the data
-
-__User 3__ paid  1000 times more for Product A than did __User 1__.
-
-| UserID | Product   | Price   |
-|--------|-----------|--------:|
-| User 1 | Product A | 10      |
-| User 2 | Product B | 20      |
-| User 3 | Product A | 10000   |
-| User 4 | Product C | 30      |
-| User 5 | Product B | 0       |
+![Image](content/images/salaries-7.png) <!-- .element: style="max-height:600px;border:none;" -->
 
 --
 
-## Effect of an extreme user
+### Adding noise
 
-| Aggregate | Including | Excluding |
-|-----------|----------:|----------:|
-| count     | 5         | 4         |
-| sum       | 10060     | 60        |
-| average   | 2012      | 15        |
-| stddev    | 4465      | 13        |
-
-Aircloak makes your analytics look more like the extreme user was not part of the results.
+![Image](content/images/aggregate-noise-1.png) <!-- .element: style="max-height:600px;border:none;" -->
 
 --
 
-## Effect of an extreme user
+### Noise magnitude determined by "heavy" users
 
-| Aggregate | Including | Excluding | Delta |
-|-----------|----------:|----------:|------:|
-| count     | 5         | 4         | 1     |
-| sum       | 10060     | 60        | 10000 |
-| average   | 2012      | 15        | 1997  |
-| stddev    | 4465      | 13        | 4452  |
-
-The effective distortion can be large. 
-
-If `count_noise`, `sum_noise`, `avg_noise`, or `stddev_noise` would expose the difference then you could easily learn about  __User 3__.
+![Image](content/images/aggregate-noise-2.png) <!-- .element: style="max-height:600px;border:none;" -->
 
 --
 
-## "Attack" example
+### Add Gaussian noise
 
-We know that "User 3" always pays too much. How do we figure out which products he bought?
-
-```sql
-SELECT product, stddev(price)
-FROM purchases
-GROUP BY product
-ORDER BY stddev(price) DESC
-```
+![Image](content/images/aggregate-noise-3.png) <!-- .element: style="max-height:600px;border:none;" -->
 
 --
 
-## What about `min_noise` and `max_noise`?
+## Quantifying the noise
 
-They do not exist. No sensible value exists that could be reported. Just like how the other `_noise` functions cannot tell you about the extreme values they suppress.
+`_noise` companion functions
+
+--
+
+## Quantifying the noise
+
+| aggregate | noise function |
+|-----------|----------------|
+| count     | count_noise    |
+| sum       | sum_noise      |
+| avg       | avg_noise      |
+| stddev    | stddev_noise   |
+| min       |                |
+| max       |                |
+
+--
+
+## Quantifying the noise
+
+| aggregate | noise function |
+|-----------|----------------|
+| count     | count_noise    |
+| sum       | sum_noise      |
+| avg       | avg_noise      |
+| stddev    | stddev_noise   |
+| min       | ???            |
+| max       | ???            |
 
 ---
 
-## User IDs selection
+## User ids and anonymization
 
-- Aircloak anonymizes based on users.
-- It needs to be able to associate a user id value to each row in a database
+- Aircloak builds groups to allow individuals to hide
+- Aircloak uses user ids to determine if a group is large enough
+
+--
+
+## Types of tables
+
+![Image](content/images/personal-vs-non-personal.png) <!-- .element: style="max-height:600px;border:none;" -->
 
 --
 
@@ -579,10 +482,15 @@ They do not exist. No sensible value exists that could be reported. Just like ho
 
 --
 
-## Types of tables
+![Image](content/images/data-model-1.png) <!-- .element: style="max-height:600px;border:none;" -->
 
-- **personal**: contains personal data
-- **non-personal**: does not contain personal data. Typically fact or lookup tables
+--
+
+![Image](content/images/data-model-2.png) <!-- .element: style="max-height:600px;border:none;" -->
+
+--
+
+![Image](content/images/data-model-3.png) <!-- .element: style="max-height:600px;border:none;" -->
 
 --
 
@@ -593,53 +501,51 @@ They do not exist. No sensible value exists that could be reported. Just like ho
 
 --
 
-## Recap: every query must reference a table with a user-id column!
+## Queries over personal data must include a user-id column
 
 --
 
-## Quiz – query 1: Ok?
+## Example 1
 
 ```sql
-SELECT name, count(*)
+SELECT users.userId, users.name, count(*)
 FROM users
+GROUP BY users.userId, users.name
 ```
 
-Answer:
-<span class="fragment">
-Yes. `users` has a `UserId`-column 
-</span>
+--
+
+## Example 2
+
+```sql
+SELECT users.name, count(*)
+FROM users
+GROUP BY users.name
+```
 
 --
 
-## Quiz – query 2: Ok?
+## Example 3
 
 ```sql
-SELECT count(*)
+SELECT count(purchases.id)
 FROM purchases
 ```
 
-Answer:
-<span class="fragment">
-Yes. `purchases` has a `UserId`-column 
-</span>
-
 --
 
-## Quiz – query 3: Ok?
+## Example 4 - not valid
 
 ```sql
-SELECT count(*)
+SELECT count(lineItems.id)
 FROM lineItems
 ```
 
-Answer:
-<span class="fragment">
-No. There is no `UserId`-column in the `lineItems` table.
-</span>
+Remember: each query over a personal table must have a user-id column.
 
 --
 
-## Query 3 solution:
+## Example 4 - solution
 
 Include a `JOIN` to a table with a `UserId` column:
 
@@ -651,89 +557,151 @@ FROM lineItems inner join purchases
 
 --
 
-## Exception: lookup/fact tables
-
-Tables that do not contain any personal information (such as the `products` table) can be queried alone without a `UserId` column being present.
-
-The reason: the query does not need anynimyzation:
+## non-personal tables
 
 ```sql
-SELECT productName
+SELECT products.productName
 FROM products
 ```
+
+No personal data = no anonymization required.
 
 --
 
 ## Unless...
 
-If lookup tables are used _together_ with tables containing personal data, then the normal rules apply:
+non-personal tables become personal if combined with a personal table!
 
-This is forbidden:
+![Image](content/images/tainted.png) <!-- .element: style="max-height:600px;border:none;" -->
+
+--
+
+## Combining table types
+
+Not allowed:
 
 ```sql
-SELECT productName, count(*)
+SELECT products.productName, count(*)
 FROM products INNER JOIN lineItems
   ON products.productId = lineItems.productId
 ```
 
-Whereas this is allowed:
+--
+
+## Combining table types
+
+Allowed:
 
 ```sql
-SELECT productName, count(*)
+SELECT products.productName, count(*)
 FROM products INNER JOIN lineItems
   ON products.productId = lineItems.productId
   INNER JOIN purchases 
   ON lineItems.purchaseId = purchases.purchaseId 
 ```
 
---
-
-## Data model refresher
-
-![Image](content/images/data-source.png) <!-- .element: style="max-height:600px;border:none;" -->
-
 ---
 
 ## Types of queries
 
-- Anonymizing queries
-- Restricted queries
-- Unrestricted queries
+--
+
+![Image](content/images/query-types-1.png) <!-- .element: style="max-height:600px;border:none;" -->
 
 --
 
-## Anonymizing queries
-
-- Any query that **aggregates or groups** across multiple distinct users
-
-```sql
-SELECT name, count(*)
-FROM users
-GROUP BY name
-```
+![Image](content/images/query-types-2.png) <!-- .element: style="max-height:600px;border:none;" -->
 
 --
 
-## Restricted query
+![Image](content/images/query-types-2b.png) <!-- .element: style="max-height:600px;border:none;" -->
 
-- Any query that operates on the data of a single user
+--
+
+![Image](content/images/query-types-3.png) <!-- .element: style="max-height:600px;border:none;" -->
+
+--
+
+![Image](content/images/query-types-4.png) <!-- .element: style="max-height:600px;border:none;" -->
+
+--
+
+![Image](content/images/query-transformation-1.png) <!-- .element: style="max-height:600px;border:none;" -->
+
+--
+
+### Non-anonymizing restricted query
 
 ```sql
-SELECT UserId, count(*) as numPurchases
+SELECT 
+  purchases.userId, 
+  count(distinct purchases.PurchaseId) as numPurchases
 FROM purchases
-GROUP BY UserId
+GROUP BY purchases.userId
+
 ```
 
 --
 
-## Unrestricted query - 1
+![Image](content/images/query-transformation-2.png) <!-- .element: style="max-height:600px;border:none;" -->
+
+--
+
+### Anonymizing restricted query
+
+```sql
+SELECT count(distinct purchases.PurchaseId) as numOfPurchases
+FROM purchases
+```
+
+--
+
+![Image](content/images/query-types-5.png) <!-- .element: style="max-height:600px;border:none;" -->
+
+--
+
+![Image](content/images/query-types-6.png) <!-- .element: style="max-height:600px;border:none;" -->
+
+--
+
+## Examples of query types
+
+--
+
+### Restricted query
+## Anonymizing 
+
+- A query that **aggregates or groups** across multiple distinct users
+
+```sql
+SELECT users.name, count(users.userId) as numUsers
+FROM users
+GROUP BY users.name
+```
+
+--
+
+### Restricted query
+## Non-anonymizing 
+
+- Operates on the data of a single user
+
+```sql
+SELECT purchases.UserId, count(*) as numPurchases
+FROM purchases
+GROUP BY purchases.UserId
+```
+
+--
+
+## Unrestricted queries
 
 - A query that operates on non-personal data 
 - A query that operates on an already anonymous result
 
 ```sql
-SELECT productName
-FROM products -- lookup table
+SELECT products.productName
+FROM products 
 ```
 
 --
@@ -745,11 +713,11 @@ FROM products -- lookup table
 ## A restricted query:
 
 ```sql
--- Restricted query
-SELECT userId, productId, count(*) as purchasedByUser
+-- Non-anonymizing restricted query
+SELECT purchases.userId, lineItems.productId, count(*) as purchasedByUser
 FROM lineItems li INNER JOIN purchases p
   ON li.purchaseId = p.purchaseId
-GROUP BY userId, productId
+GROUP BY purchases.userId, lineItems.productId
 ```
 
 --
@@ -757,19 +725,26 @@ GROUP BY userId, productId
 ## ... within an anonymizing query
 
 ```sql
--- Anonymizing query
+-- Anonymizing restricted query
 SELECT 
-  productId, 
-  purchasedByUser, 
-  count(*) as usersWithNumPurchases
+  perUser.productId, 
+  perUser.numPurchases, 
+  count(*)
 FROM (
-  -- Restricted query
-  SELECT userId, productId, count(*) as purchasedByUser
+  -- Non-anonymizing restricted query
+  SELECT purchases.userId, lineItems.productId, count(*) as numPurchases
   FROM lineItems li INNER JOIN purchases p
     ON li.purchaseId = p.purchaseId
-  GROUP BY userId, productId
-) as perUserProductPurchases
+  GROUP BY purchases.userId, lineItems.productId
+) as perUser
+GROUP BY
+  perUser.productId, 
+  perUser.numPurchases
 ```
+
+--
+
+![Image](content/images/anon-graphed.png) <!-- .element: style="max-height:600px;border:none;" -->
 
 --
 
@@ -777,73 +752,69 @@ FROM (
 
 ```sql
 -- Unrestricted query
-SELECT productId
+SELECT anonResult.productId
 FROM (
-  -- Anonymizing query
+  -- Anonymizing restricted query
   SELECT 
-    productId, 
-    purchasedByUser, 
-    count(*) as usersWithNumPurchases
+    perUser.productId, 
+    perUser.numPurchases, 
+    count(*)
   FROM (
-    -- Restricted query
-    SELECT userId, productId, count(*) as purchasedByUser
+    -- Non-anonymizing restricted query
+    SELECT purchases.userId, lineItems.productId, count(*) as numPurchases
     FROM lineItems li INNER JOIN purchases p
       ON li.purchaseId = p.purchaseId
-    GROUP BY userId, productId
-  ) as perUserProductPurchases
-) as perUserProductPurchaseStats
-HAVING SUM(purchasedByUser) * SUM(usersWithNumPurchases) > 100
+    GROUP BY purchases.userId, lineItems.productId
+  ) as perUser
+  GROUP BY
+    perUser.productId, 
+    perUser.numPurchases
+) anonResult
+HAVING SUM(anonResult.numPurchases) * SUM(anonResult.count) > 100
 ```
 
 --
 
-## Same query – less complex
-
-```sql
-SELECT productId, count(*) as timesPurchased
-FROM lineItems li INNER JOIN purchases p
-  ON li.purchaseId = p.purchaseId
-GROUP BY productId
-HAVING timesPurchased > 100
-```
-
-__Quiz__: what query type is this?
+## Quiz time
 
 --
 
 ## Data model refresher
 
-![Image](content/images/data-source.png) <!-- .element: style="max-height:600px;border:none;" -->
+![Image](content/images/data-model-3.png) <!-- .element: style="max-height:600px;border:none;" -->
 
 --
 
-## Final gotcha
+## Restricted or un-restricted?
 
- What query type is this?
-
- ```sql
-SELECT purchaseId
-FROM purchases
- ```
-
- <span class="fragment">
- <strong>Answer:</strong> restricted but not anonymizing. There is no cross user grouping. One input row to one output row and there is a User id column in the table. 
- </span>
-
---
-
-## End with a simpler one
-
- What query type is this?
-
- ```sql
+```sql
 SELECT count(*)
-FROM users
- ```
+FROM products
+```
 
- <span class="fragment">
- <strong>Answer:</strong> anonymizing. Cross user aggregation (which is a grouping)
- </span>
+--
+
+## Anonymizing or non-anonymizing 
+
+```sql
+SELECT count(purchases.UserId)
+FROM purchases
+```
+
+--
+
+## Anonymizing or non-anonymizing sub-query
+
+```sql
+SELECT purchases.userId, count(lineItems.purchaseId) as numLineItems
+FROM purchases p INNER JOIN lineItems li
+  ON p.purchaseId = li.purchaseId
+GROUP BY purchases.userId
+```
+
+--
+
+## Good job!
 
 ---
 
@@ -1079,23 +1050,10 @@ Read a count of 2 as meaning:
 You can filter out aggregates that are not meaningful.
 
 ```sql
-SELECT some, properties, aggregate(...)
-FROM table
-GROUP BY some, properties
-HAVING aggregate(...) > X
-```
-
---
-
-## Filtering insignificant aggregates - low counts
-
-You can filter out aggregates that are not meaningful.
-
-```sql
-SELECT some, properties, aggregate(...)
-FROM table
-GROUP BY some, properties
-HAVING aggregate(...) > 20
+SELECT salary, count(*)
+FROM salaries
+GROUP BY salary
+HAVING count(*) > 10
 ```
 
 --
@@ -1105,27 +1063,11 @@ HAVING aggregate(...) > 20
 You can filter out aggregates where the noise dominates.
 
 ```sql
-SELECT some, properties, aggregate(...)
-FROM table
-GROUP BY some, properties
--- Signal to noise ratio better than X
-HAVING aggregate(...) / aggregate_noise(...) > X
-
-```
-
---
-
-## Filtering insignificant aggregates - noisy results
-
-You can filter out aggregates where the noise dominates.
-
-```sql
-SELECT some, properties, aggregate(...)
-FROM table
-GROUP BY some, properties
--- Signal to noise ratio better than 5
-HAVING aggregate(...) / aggregate_noise(...) > 5
-
+SELECT salary, count(*)
+FROM salaries
+GROUP BY salary
+-- Signal to noise ratio better than 10
+HAVING count(*) / count_noise(*) > 10
 ```
 
 ---
@@ -1208,15 +1150,9 @@ Demo!
 
 ## Restrictions
 
-<span class="fragment">
-All restrictions for anonymization purposes
-</span>
-<span class="fragment">
-Over time some might be removed or softened.
-</span>
-<span class="fragment">
-Restrictions only apply in anonymizing and restricted queries.
-</span>
+- All restrictions for anonymization purposes
+- Over time some might be removed or softened.
+- Restrictions only apply in anonymizing and restricted queries.
 
 --
 
@@ -1295,7 +1231,7 @@ Similarly dates are also snapped to a 1, 2, 5 grid.
 
 --
 
-## Full list in documentation
+## Full list of restrictions are in the documentation
 
 ---
 
