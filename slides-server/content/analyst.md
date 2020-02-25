@@ -413,6 +413,12 @@ The more columns your query includes, the higher the chance
 
 --
 
+### Where the answer might be
+
+![Image](content/images/aggregate-noise-4.png) <!-- .element: style="max-height:600px;border:none;" -->
+
+--
+
 ## Quantifying the noise
 
 `_noise` companion functions
@@ -594,15 +600,22 @@ FROM products INNER JOIN lineItems
 
 --
 
-![Image](content/images/query-types-2b.png) <!-- .element: style="max-height:600px;border:none;" -->
-
---
-
 ![Image](content/images/query-types-3.png) <!-- .element: style="max-height:600px;border:none;" -->
 
 --
 
 ![Image](content/images/query-types-4.png) <!-- .element: style="max-height:600px;border:none;" -->
+
+--
+
+## Why do I need to know
+
+- Knowing when anonymization takes place is important for good query results
+- Unrestricted queries do not underly Aircloak query restrictions
+
+--
+
+## Anonymizing vs non-anonymizing
 
 --
 
@@ -636,14 +649,6 @@ FROM purchases
 
 --
 
-![Image](content/images/query-types-5.png) <!-- .element: style="max-height:600px;border:none;" -->
-
---
-
-![Image](content/images/query-types-6.png) <!-- .element: style="max-height:600px;border:none;" -->
-
---
-
 ## Examples of query types
 
 --
@@ -671,6 +676,14 @@ SELECT purchases.UserId, count(*) as numPurchases
 FROM purchases
 GROUP BY purchases.UserId
 ```
+
+--
+
+### Restricted query
+## Non-anonymizing 
+
+- Only useful as sub-queries!
+- Aircloak will try to anonymize the results if it is the top-level query
 
 --
 
@@ -752,6 +765,10 @@ FROM (
 ) anonResult
 HAVING SUM(anonResult.numPurchases) * SUM(anonResult.count) > 100
 ```
+
+--
+
+![Image](content/images/query-types-transition.png) <!-- .element: style="max-height:600px;border:none;" -->
 
 --
 
@@ -838,9 +855,9 @@ notes: show doc in the web interface
 
 | Oracle                  | Aircloak                 |
 |-------------------------|--------------------------|
-| trunc(c, 'year')        | date_trunc('year', c)    |
+| trunc(c, 'yyyy')        | date_trunc('year', c)    |
 | trunc(c, 'q')           | date_trunc('quarter', c) |
-| trunc(c, 'month')       | date_trunc('month', c)   |
+| trunc(c, 'mm')          | date_trunc('month', c)   |
 | trunc(c, 'dd')          | date_trunc('day', c)     |
 | trunc(c, 'hh')          | date_trunc('hour', c)    |
 | trunc(c, 'mi')          | date_trunc('minute', c)  |
@@ -987,14 +1004,14 @@ GROUP BY item
 
 ### What Aircloak reports
 
-| aggregate      | return value |
-|----------------|-------------:|
-| count(mileage) | 2            |
-| avg(mileage)   | null         |
-| sum(mileage)   | null         |
-| avg(mileage)   | null         |
-| max(mileage)   | null         |
-| min(mileage)   | null         |
+| aggregate       | return value |
+|-----------------|-------------:|
+| count(mileage)  | 2            |
+| avg(mileage)    | null         |
+| sum(mileage)    | null         |
+| stddev(mileage) | null         |
+| max(mileage)    | null         |
+| min(mileage)    | null         |
 
 <span class="fragment">
 > This property exists in my dataset. But I CANNOT make any statistical assesment of any aggregate properties
@@ -1014,14 +1031,14 @@ Read a count of 2 as meaning:
 
 ### What about X_noise?
 
-| aggregate      | return value | _noise |
-|----------------|-------------:|-------:|
-| count(mileage) | 2            | null   |
-| avg(mileage)   | null         | null   |
-| sum(mileage)   | null         | null   |
-| avg(mileage)   | null         | null   |
-| max(mileage)   | null         | null   |
-| min(mileage)   | null         | null   |
+| aggregate       | return value | _noise |
+|-----------------|-------------:|-------:|
+| count(mileage)  | 2            | null   |
+| avg(mileage)    | null         | null   |
+| sum(mileage)    | null         | null   |
+| stddev(mileage) | null         | null   |
+| max(mileage)    | null         |        |
+| min(mileage)    | null         |        |
 
 --
 
@@ -1122,9 +1139,11 @@ GROUP BY ...
 - into views
 - into table ("create table as select")
 
-<span class="fragment">
-Demo!
-</span>
+--
+
+## Extract common logic 
+
+# Demo
 
 ---
 
