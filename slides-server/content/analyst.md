@@ -59,21 +59,21 @@ Before we start
 
 --
 
-<!-- .slide: data-transition="none" data-background="content/images/aircloak-interface.png" -->
+<!-- -- data-transition="none" data-background="content/images/aircloak-interface.png" -->
 
 ## a browser interface <!-- .element: style="position: absolute; width: 40%; right: 0; box-shadow: 0 1px 4px rgba(0,0,0,0.5), 0 5px 25px rgba(0,0,0,0.2); background-color: rgba(0, 0, 0, 0.9); color: #fff; padding: 20px; font-size: 20px; text-align: left;" -->
 
 
 --
 
-<!-- .slide: data-transition="none" data-background="content/images/rest-api.png" -->
+<!-- -- data-transition="none" data-background="content/images/rest-api.png" -->
 
 ## a REST API <!-- .element: style="position: absolute; width: 40%; right: 0; box-shadow: 0 1px 4px rgba(0,0,0,0.5), 0 5px 25px rgba(0,0,0,0.2); background-color: rgba(0, 0, 0, 0.9); color: #fff; padding: 20px; font-size: 20px; text-align: left;" -->
 
 
 --
 
-<!-- .slide: data-transition="none" data-background="content/images/psql.png" -->
+<!-- -- data-transition="none" data-background="content/images/psql.png" -->
 
 ## Postgres query interface <!-- .element: style="position: absolute; width: 40%; right: 0; box-shadow: 0 1px 4px rgba(0,0,0,0.5), 0 5px 25px rgba(0,0,0,0.2); background-color: rgba(0, 0, 0, 0.9); color: #fff; padding: 20px; font-size: 20px; text-align: left;" -->
 
