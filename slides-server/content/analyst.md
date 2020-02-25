@@ -893,7 +893,19 @@ notes: show doc in the web interface
 
 ## Visualizing `bucket`
 
-![Image](content/images/bucket-after.png) <!-- .element: style="max-height:600px;border:none;" -->
+![Image](content/images/bucket-down.png) <!-- .element: style="max-height:600px;border:none;" -->
+
+--
+
+## Visualizing `bucket`
+
+![Image](content/images/bucket-mid.png) <!-- .element: style="max-height:600px;border:none;" -->
+
+--
+
+## Visualizing `bucket`
+
+![Image](content/images/bucket-up.png) <!-- .element: style="max-height:600px;border:none;" -->
 
 --
 
