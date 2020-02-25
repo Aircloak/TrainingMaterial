@@ -1,7 +1,7 @@
 # Analyst training
 ## Aircloak Insights
 
-Telefonica – 2020
+Telefonica – March 3rd – 2020
 
 ---
 
@@ -88,7 +88,6 @@ Before we start
 ## Terms and how they differ
 
 - Pseudonymization
-- Data masking
 - Anonymization
 
 --
@@ -110,26 +109,6 @@ Before we start
 | A      | 10  |     0  | Alvar   |
 | B      | 20  | 20000  | Borg    |
 | C      | 30  | 50000  | Crantor |
-
---
-
-### Masked data - partial
-
-| UserID | Age | Salary | Name    | 
-|--------|----:|-------:|---------|
-| 1      | 10  |     X  | Xlice   |
-| 2      | 20  | 20XXX  | Xob     |
-| 3      | 30  | 50XXX  | Xynthia |
-
---
-
-### Masked data
-
-| UserID | Age | Salary | Name    | 
-|--------|----:|-------:|---------|
-| 1      |  10 |     X  | X       |
-| 2      |  20 |     X  | X       |
-| 3      |  30 |     X  | X       |
 
 --
 
@@ -157,12 +136,13 @@ More generally some form of aggregation and distortion:
 
 ### Notice:
 
-- Both pseudonymous and data masking yields per user data
-- Despite masking and/or redaction inference is often possible with (and sometimes without) additional knowledge
+- Pseudonymous yields per user data
+- Pseudonymous data is considered personal
+- Information about individuals can often be inferred
 
 --
 
-### Confusing these categories leads to disaster
+### Confusing these categories can lead to disaster
 
 CUE: Felix tell stories
 
@@ -178,9 +158,9 @@ CUE: Felix tell stories
 
 ## Low count filtering
 
-If some information is shared by enough (~5) users then it is generally:
-- safe 
+If some descriptors are common to multiple users (~5) then it is generally:
 - not identifying
+- safe to share
 
 --
 
@@ -192,7 +172,7 @@ You walk into a meeting room and find:
 
 --
 
-## Consider the following statements:
+## Consider the following prior information:
 
 - a) 1 person was in the room
 - b) 25 people were in the room
@@ -202,21 +182,21 @@ You walk into a meeting room and find:
 ## 1 person
 
 - You _do know_ who the owner of the notebook is
-- You know with high certainty that this person also made the mess
+- You know with _high certainty_ that this person also made the mess
 
 --
 
 ## 25 people
 
-- You _do know_ how the owner of the notebook is
-- You have _no knowledge_ of who made the mess
+- You _do know_ who the owner of the notebook is
+- You _do not know_ who made the mess
 
 --
 
 ## 25 people
 
-- You _do know_ how the owner of the notebook is
-- You have _no knowledge_ of who made the mess
+- You _do know_ who the owner of the notebook is
+- You _do not know_ who made the mess
 
 You can hide in a crowd!
 
@@ -227,21 +207,21 @@ You can hide in a crowd!
 --
 
 ## Quiz
-### Scenario: We know of all purchases of an "Obscure mess remover"
+### Scenario: We know of all purchases of an "Mega clean 2000" (an obscure cleaning product)
 
 --
 
 ### Quiz 1 
-#### Is "Obscure mess remover" ok to reveal? 
+#### Is "Mega clean 2000" ok to reveal? 
 
-| UserID | Product              |
-|-------:|----------------------|
-|      1 | Obscure mess remover |
-|      1 | Obscure mess remover |
-|      1 | Obscure mess remover |
-|      1 | Obscure mess remover |
-|      1 | Obscure mess remover |
-|      1 | Obscure mess remover |
+| UserID | Product         |
+|-------:|-----------------|
+|      1 | Mega clean 2000 |
+|      1 | Mega clean 2000 |
+|      1 | Mega clean 2000 |
+|      1 | Mega clean 2000 |
+|      1 | Mega clean 2000 |
+|      1 | Mega clean 2000 |
 
 <span class="fragment">
 No. Only a single person bought the product. There is no crowd to hide in.
@@ -250,26 +230,26 @@ No. Only a single person bought the product. There is no crowd to hide in.
 --
 
 ### Quiz 2
-#### Is "Obscure mess remover" ok to reveal? 
+#### Is "Mega clean 2000" ok to reveal? 
 
-| UserID | Product              |
-|-------:|----------------------|
-|      1 | Obscure mess remover |
-|      2 | Obscure mess remover |
-|      3 | Obscure mess remover |
-|      4 | Obscure mess remover |
-|      5 | Obscure mess remover |
-|      6 | Obscure mess remover |
+| UserID | Product         |
+|-------:|-----------------|
+|      1 | Mega clean 2000 |
+|      2 | Mega clean 2000 |
+|      3 | Mega clean 2000 |
+|      4 | Mega clean 2000 |
+|      5 | Mega clean 2000 |
+|      6 | Mega clean 2000 |
 
 <span class="fragment">
 Yes. ~5 users bought the product. They are all hiding in a crowd.
 </span>
 
---
+---
 
-### Example: fine grained values
+## Fine grained values
 
-If you have fine grained data (like for example a `timestamp`) then every value becomes an "Obscure mess remover".
+If you have fine grained data (like for example a `timestamp`) then every value becomes a "Mega clean 2000"-equivalent.
 
 --
 
@@ -564,7 +544,7 @@ SELECT products.productName
 FROM products
 ```
 
-No personal data = no anonymization required.
+No personal data = no anonymization required
 
 --
 
