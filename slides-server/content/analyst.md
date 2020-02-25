@@ -100,7 +100,11 @@ Before we start
 | 2      | 20  | 20000  | Bob     |
 | 3      | 30  | 50000  | Cynthia |
 
+<!-- -- data-transition="none" data-background-transition="none" -->
+
 --
+
+<!-- -- data-transition="none" data-background-transition="none" -->
 
 ### Pseudonymized data
 
@@ -191,7 +195,11 @@ You walk into a meeting room and find:
 - You _do know_ who the owner of the notebook is
 - You _do not know_ who made the mess
 
+<!-- -- data-transition="slide-in none-out" -->
+
 --
+
+<!-- -- data-transition="none-in slide-out" -->
 
 ## 25 people
 
@@ -266,26 +274,32 @@ If you have fine grained data (like for example a `timestamp`) then every value 
 --
 
 ![Image](content/images/lcf-g1.png) <!-- .element: style="max-height:600px;border:none;" -->
+<!-- -- data-transition="slide-in none-out" -->
 
 --
 
 ![Image](content/images/lcf-g2.png) <!-- .element: style="max-height:600px;border:none;" -->
+<!-- -- data-transition="none" -->
 
 --
 
 ![Image](content/images/lcf-g3.png) <!-- .element: style="max-height:600px;border:none;" -->
+<!-- -- data-transition="none" -->
 
 --
 
 ![Image](content/images/lcf-g4.png) <!-- .element: style="max-height:600px;border:none;" -->
+<!-- -- data-transition="none" -->
 
 --
 
 ![Image](content/images/lcf-g5.png) <!-- .element: style="max-height:600px;border:none;" -->
+<!-- -- data-transition="none" -->
 
 --
 
 ![Image](content/images/lcf-g6.png) <!-- .element: style="max-height:600px;border:none;" -->
+<!-- -- data-transition="none-in slide-out" -->
 
 --
 
@@ -327,6 +341,8 @@ If you have fine grained data (like for example a `timestamp`) then every value 
 | ...    | ...                    |
 | F      | 1980-12-30 18:30:05.19 |
 
+<!-- -- data-transition="slide-in none-out" -->
+
 --
 
 ## But in reality it is
@@ -338,6 +354,8 @@ If you have fine grained data (like for example a `timestamp`) then every value 
 | True            | F      | 1980-02-01 02:50:05.99 |
 | True            | ...    | ...                    |
 | True            | F      | 1980-12-30 18:30:05.19 |
+
+<!-- -- data-transition="none-in slide-out" -->
 
 --
 
@@ -356,66 +374,77 @@ The more columns your query includes, the higher the chance
 ### A histogram of salaries
 
 ![Image](content/images/salaries-1.png) <!-- .element: style="max-height:600px;border:none;" -->
+<!-- -- data-transition="slide-in none-out" -->
 
 --
 
 ### Low count filter would suppress these
 
 ![Image](content/images/salaries-2.png) <!-- .element: style="max-height:600px;border:none;" -->
+<!-- -- data-transition="none" -->
 
 --
 
 ### Aggregates are different
 
 ![Image](content/images/salaries-3.png) <!-- .element: style="max-height:600px;border:none;" -->
+<!-- -- data-transition="none" -->
 
 --
 
 ### How about extreme values?
 
 ![Image](content/images/salaries-4.png) <!-- .element: style="max-height:600px;border:none;" -->
+<!-- -- data-transition="none" -->
 
 --
 
 ### How about extreme values?
 
 ![Image](content/images/salaries-5.png) <!-- .element: style="max-height:600px;border:none;" -->
+<!-- -- data-transition="none" -->
 
 --
 
 ### Extreme values are shifted
 
 ![Image](content/images/salaries-6.png) <!-- .element: style="max-height:600px;border:none;" -->
+<!-- -- data-transition="none" -->
 
 --
 
 ### Extreme values are shifted
 
 ![Image](content/images/salaries-7.png) <!-- .element: style="max-height:600px;border:none;" -->
+<!-- -- data-transition="none-in slide-out" -->
 
 --
 
 ### Adding noise
 
 ![Image](content/images/aggregate-noise-1.png) <!-- .element: style="max-height:600px;border:none;" -->
+<!-- -- data-transition="slide-in none-out" -->
 
 --
 
 ### Noise magnitude determined by "heavy" users
 
 ![Image](content/images/aggregate-noise-2.png) <!-- .element: style="max-height:600px;border:none;" -->
+<!-- -- data-transition="none" -->
 
 --
 
 ### Add Gaussian noise
 
 ![Image](content/images/aggregate-noise-3.png) <!-- .element: style="max-height:600px;border:none;" -->
+<!-- -- data-transition="none" -->
 
 --
 
 ### Where the answer might be
 
 ![Image](content/images/aggregate-noise-4.png) <!-- .element: style="max-height:600px;border:none;" -->
+<!-- -- data-transition="none-in slide-out" -->
 
 --
 
@@ -436,6 +465,8 @@ The more columns your query includes, the higher the chance
 | min       |                |
 | max       |                |
 
+<!-- -- data-transition="slide-in none-out" -->
+
 --
 
 ## Quantifying the noise
@@ -448,6 +479,8 @@ The more columns your query includes, the higher the chance
 | stddev    | stddev_noise   |
 | min       | ???            |
 | max       | ???            |
+
+<!-- -- data-transition="none-in slide-out" -->
 
 ---
 
@@ -465,18 +498,22 @@ The more columns your query includes, the higher the chance
 --
 
 ![Image](content/images/data-source.png) <!-- .element: style="max-height:600px;border:none;" -->
+<!-- -- data-transition="slide-in none-out" -->
 
 --
 
 ![Image](content/images/data-model-1.png) <!-- .element: style="max-height:600px;border:none;" -->
+<!-- -- data-transition="none" -->
 
 --
 
 ![Image](content/images/data-model-2.png) <!-- .element: style="max-height:600px;border:none;" -->
+<!-- -- data-transition="none" -->
 
 --
 
 ![Image](content/images/data-model-3.png) <!-- .element: style="max-height:600px;border:none;" -->
+<!-- -- data-transition="none-in slide-out" -->
 
 --
 
@@ -593,18 +630,22 @@ FROM products INNER JOIN lineItems
 --
 
 ![Image](content/images/query-types-1.png) <!-- .element: style="max-height:600px;border:none;" -->
+<!-- -- data-transition="slide-in none-out" -->
 
 --
 
 ![Image](content/images/query-types-2.png) <!-- .element: style="max-height:600px;border:none;" -->
+<!-- -- data-transition="none" -->
 
 --
 
 ![Image](content/images/query-types-3.png) <!-- .element: style="max-height:600px;border:none;" -->
+<!-- -- data-transition="none" -->
 
 --
 
 ![Image](content/images/query-types-4.png) <!-- .element: style="max-height:600px;border:none;" -->
+<!-- -- data-transition="none-in slide-out" -->
 
 --
 
@@ -669,6 +710,14 @@ GROUP BY users.name
 ### Restricted query
 ## Non-anonymizing 
 
+- Only useful as sub-queries!
+- Aircloak will try to anonymize the results if it is the top-level query
+
+--
+
+### Restricted query
+## Non-anonymizing 
+
 - Operates on the data of a single user
 
 ```sql
@@ -676,14 +725,6 @@ SELECT purchases.UserId, count(*) as numPurchases
 FROM purchases
 GROUP BY purchases.UserId
 ```
-
---
-
-### Restricted query
-## Non-anonymizing 
-
-- Only useful as sub-queries!
-- Aircloak will try to anonymize the results if it is the top-level query
 
 --
 
@@ -868,12 +909,14 @@ notes: show doc in the web interface
 ## Importance of `date_trunc`
 
 ![Image](content/images/lcf-g4.png) <!-- .element: style="max-height:600px;border:none;" -->
+<!-- -- data-transition="slide-in none-out" -->
 
 --
 
 ## Importance of `date_trunc`
 
 ![Image](content/images/lcf-g5.png) <!-- .element: style="max-height:600px;border:none;" -->
+<!-- -- data-transition="none-in slide-out" -->
 
 --
 
@@ -888,36 +931,42 @@ notes: show doc in the web interface
 ## Visualizing `bucket`
 
 ![Image](content/images/bucket-before.png) <!-- .element: style="max-height:600px;border:none;" -->
+<!-- -- data-transition="slide-in none-out" -->
 
 --
 
 ## Visualizing `bucket`
 
 ![Image](content/images/bucket-down.png) <!-- .element: style="max-height:600px;border:none;" -->
+<!-- -- data-transition="none" -->
 
 --
 
 ## Visualizing `bucket`
 
 ![Image](content/images/bucket-mid.png) <!-- .element: style="max-height:600px;border:none;" -->
+<!-- -- data-transition="none" -->
 
 --
 
 ## Visualizing `bucket`
 
 ![Image](content/images/bucket-up.png) <!-- .element: style="max-height:600px;border:none;" -->
+<!-- -- data-transition="none-in slide-out" -->
 
 --
 
 ## Importance of `bucket`
 
 ![Image](content/images/lcf-g4.png) <!-- .element: style="max-height:600px;border:none;" -->
+<!-- -- data-transition="slide-in none-out" -->
 
 --
 
 ## Importance of `bucket`
 
 ![Image](content/images/lcf-g5.png) <!-- .element: style="max-height:600px;border:none;" -->
+<!-- -- data-transition="none-in slide-out" -->
 
 --
 
@@ -950,16 +999,18 @@ SELECT * FROM table
 <span class="fragment">
 Remember: Aircloak suppresses column combinations that aren't shared by sufficiently many users. With `SELECT *` all rows end up identifying 
 </span>
+<!-- -- data-transition="slide-in none-out" -->
 
 --
 
-## Common pitfalls
+## Common pitfalls - *
 
 ```sql
 SELECT * FROM table
 ```
 
 ![Image](content/images/selectstar.png) <!-- .element: style="max-height:600px;border:none;" -->
+<!-- -- data-transition="none-in slide-out" -->
 
 --
 
@@ -1025,9 +1076,7 @@ GROUP BY item
 | max(mileage)    | null         |
 | min(mileage)    | null         |
 
-<span class="fragment">
 > This property exists in my dataset. But I CANNOT make any statistical assesment of any aggregate properties
-</span>
 
 --
 
