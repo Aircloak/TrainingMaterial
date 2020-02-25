@@ -878,8 +878,6 @@ Aircloak supports a subset of standard SQL.
 
 Docs are a useful resource.
 
-notes: show doc in the web interface
-
 ---
 
 ## Differences to Oracle 
