@@ -16,19 +16,33 @@
 
 	<!-- Printing and PDF exports -->
 	<script>
+		var printPdf = window.location.search.match(/print-pdf/gi);
 		var link = document.createElement('link');
 		link.rel = 'stylesheet';
 		link.type = 'text/css';
-		link.href = window.location.search.match(/print-pdf/gi) ? 'css/print/pdf.css' : 'css/print/paper.css';
+		link.href = printPdf ? 'css/print/pdf.css' : 'css/print/paper.css';
 		document.getElementsByTagName('head')[0].appendChild(link);
 	</script>
+
+	<style type="text/css">
+		@page {
+			margin: 0;
+			size: auto;
+		}
+
+		@media print {
+			.reveal pre code {
+				max-height: none !important;
+			}
+		}
+	</style>
 </head>
 
 <body>
 	<div class="reveal">
 		<div class="slides">
 			<section data-markdown="content/analyst.md" data-separator="^\r?\n---\r?\n$"
-				data-separator-vertical="^\r?\n--\r?\n$" data-separator-notes="^(N|n)otes?:" 
+				data-separator-vertical="^\r?\n--\r?\n$" data-separator-notes="^(N|n)otes?:"
 				data-attributes="--\s(.*?)$" data-charset="utf-8">
 			</section>
 		</div>
@@ -65,6 +79,18 @@
 			width: 960,
 			height: 700
 		});
+	</script>
+
+	<script>
+		if (printPdf) {
+			if (Reveal.isReady()) {
+				window.print();
+			} else {
+				Reveal.addEventListener('ready', function () {
+					window.print();
+				});
+			}
+		}
 	</script>
 </body>
 
