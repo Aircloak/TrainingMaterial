@@ -323,7 +323,7 @@ If you have fine grained data (like for example a `timestamp`) then every value 
 ## Tradeoff 
 ### More columns, less results
 
-`(zip-code, date of birth, gender)` uniquely identifies 67% of all US citizens!
+`(zip-code, date of birth, gender)` uniquely identifies 67% of all US citizens (of which there are 329 million)!
 
 --
 
