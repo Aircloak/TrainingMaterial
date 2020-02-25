@@ -1339,9 +1339,17 @@ https://download.aircloak.com/analyst-training/
 
 ## How do I get access
 
+1. Open a JIRA request in DWH Services Infrastructure (DWHI) stating the names of the data sources
+2. "Grant access to aircloak"
+3. Add component "aircloak"
+
 ---
 
 ## I need other data, what to do
+
+1. Open a JIRA request in DWH Services Infrastructure (DWHI) stating the DBMS object names
+2. "Include objects into Aircloak",
+3. Add component "aircloak"
 
 ---
 
@@ -1349,13 +1357,15 @@ https://download.aircloak.com/analyst-training/
 
 There are three ways working around missing features
 
-1. Fast: Sometimes it's a matter of reformulating the query
-2. Medium: Create views in Oracle and expose the views through Aircloak
-3. Slow/Uncertain: Request the addition of the feature
+1. __Fast__: Sometimes it's a matter of reformulating the query
+2. __Medium__: Create views in Oracle and expose the views through Aircloak
+3. __Slow/Uncertain__: Request the addition of the feature
 
 ---
 
 ## Oracle DB Link / DB Gateway
+
+- not yet final, one DB-Link exists but we still have to work out how to do it properly
 
 ---
 
@@ -1363,12 +1373,18 @@ There are three ways working around missing features
 
 - Internal handbook with learnings
 
+> K:\Business Intelligence Center\02_DATAWAREHOUSING_Team\40 Projects\Anonymisierung\05_Aircloak\13_Handbook
+
 ---
 
 ## Getting help
 
 - Telefonica offers 1st level support (Jira)
+  - DWHI, add component "aircloak"
 - Problems can be escalated to Aircloak (Jira)
+  - please refer to your 1st level support ~(Jira)~ imho Aircloak's JIRA should only be operated by 
+    our 1st level support when you have problems, you can potentially provide a debug report to you 
+    DWH SEs(see next slide)
 
 --
 
@@ -1388,11 +1404,15 @@ A debug export contains:
 
 ![Image](content/images/de-menu.png) <!-- .element: style="max-height:600px;border:none;" -->
 
+<!-- -- data-transition="slide-in none-out" --> 
+
 --
 
 ### Enabling debug exports
 
 ![Image](content/images/de-settings-pre.png) <!-- .element: style="max-height:600px;border:none;" -->
+
+<!-- -- data-transition="none" --> 
 
 --
 
@@ -1400,11 +1420,15 @@ A debug export contains:
 
 ![Image](content/images/de-settings-post.png) <!-- .element: style="max-height:600px;border:none;" -->
 
+<!-- -- data-transition="none" --> 
+
 --
 
 ### Enabling debug exports
 
 ![Image](content/images/de-button.png) <!-- .element: style="max-height:600px;border:none;" -->
+
+<!-- -- data-transition="none-in slide-out" --> 
 
 ---
 
