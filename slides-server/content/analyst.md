@@ -148,8 +148,6 @@ More generally some form of aggregation and distortion:
 
 ### Confusing these categories can lead to disaster
 
-CUE: Felix tell stories
-
 ---
 
 ## Anonymization and Aircloak
@@ -1309,6 +1307,14 @@ First to solve the task wins a Grand Price!
 # Practical session!
 
 ---
+
+## Scenario
+
+- We are data scientists at Berka Bank 
+
+
+
+Which customer group 
 
 ## Sample Jupyter Notebook
 
