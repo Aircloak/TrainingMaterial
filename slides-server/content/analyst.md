@@ -1311,14 +1311,50 @@ First to solve the task wins a Grand Price!
 ## Scenario
 
 - We are data scientists at Berka Bank 
+- We want to figure out:
+  - Which customer group brings in the most revenue as a group
+  - Which customer group brings in the most revenue per member
+- "Customer group" is defined by their credit card type
 
+--
 
+### "Facts"
 
-Which customer group 
+- We charge 1% interest on credit card transactions
+- The transactions we care about are the "expense"-transactions (`type = 'VYDAJ'`)
+
+--
+
+## Data model
+
+![Image](content/images/task3-schema.png) <!-- .element: style="max-height:600px;border:none;" -->
+
+--
 
 ## Sample Jupyter Notebook
 
 https://download.aircloak.com/analyst-training/
+
+--
+
+## Data model + task
+
+<div>
+  <img src="content/images/task3-schema.png"
+    style="border: none; max-width: 22vw; float:left"
+  >
+
+  <div style="float:left; width: 22vw; padding: 2rem">
+    <ul>
+      <li>We charge 1% interest on credit card transactions (`type = 'VYDAJ'`)</li>
+      <li>Which customer group (credit card type) brings in the most revenue: as a group, per customer</li>
+    </ul>
+  </div>
+</div>
+
+--
+
+## Solution walk-through 
 
 ---
 
