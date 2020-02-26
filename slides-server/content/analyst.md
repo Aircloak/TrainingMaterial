@@ -1337,6 +1337,14 @@ https://download.aircloak.com/analyst-training/
 
 --
 
+## Where is the data?
+
+- URL: https://demo.aircloak.com
+- Username: your email address
+- Password: `telefonica1234`
+
+--
+
 ## Data model + task
 
 <div>
