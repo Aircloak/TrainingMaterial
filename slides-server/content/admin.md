@@ -1,49 +1,21 @@
-# Analyst training
+# Admin training
 ## Aircloak Insights
 
-Telefonica – March 3rd 2020
+Telefonica – March 2nd 2020
 
 ---
 
 # Agenda
 
-1. Anonymization
-1. Querying with Aircloak
-1. Practical session
-1. Telefonica specific details
-
---
-
-## Sessions
-
-- Start on the hour
-- Each session takes ~45 minutes
-- 15 minute break between sessions
+1. What is Aircloak and what are its parts
+1. Anonymization primer and data source configuration
+1. Supporting the users and yourselves 
+1. System configuration and maintenance
 
 ---
 
-## Introductions
-
---
-
-## We are
-
-- Felix 
-- Sebastian 
-
---
-
-## You are
-
-Quick round. What is your:
-- name
-- role
-
----
-
-Before we start
-
-## What is Aircloak?
+## Session 1:
+# What is Aircloak?
 
 --
 
@@ -52,6 +24,10 @@ Before we start
 - is an SQL query proxy <!-- .element: class="fragment"-->
 - performs dynamic anonymization at runtime <!-- .element: class="fragment"-->
 - no risk of accidental data disclosure <!-- .element: class="fragment"-->
+
+--
+
+![Image](content/images-admin/graphic-overview-new.svg) <!-- .element: style="max-height:600px;border:none;" -->
 
 --
 
@@ -79,11 +55,44 @@ Before we start
 
 ---
 
+## Why should we care?
 
-## Session 1: 
-# Anonymization
+--
 
----
+## What value does it bring?
+
+Every item that complicates a system should justify its existence
+
+--
+
+## Gaining access to data
+
+- Data protection is important – yet difficult
+- Alternatives are:
+  - Explicitly given informed concent
+  - Not working with data
+  - Breaking the law
+  - Anonymizing data
+
+--
+
+## Anonymization is difficult
+
+- Anonymization tends to be done on a case-by-case basis
+- The turnaround time from idea to data tends to be in weeks or months rather than minutes
+- Data Protection Officers involuntarily become "bad wolfs" rather than enablers
+
+--
+
+## Aircloak
+
+- Data agnostic anonymization
+- Use case agnostic anonymization
+- Install once, run any query
+- Real-time access to work on live production data
+- No need to maintain a separate copy of data
+
+--
 
 ## Terms and how they differ
 
@@ -150,7 +159,147 @@ More generally some form of aggregation and distortion:
 
 ---
 
-## Anonymization and Aircloak
+## Components
+
+--
+
+## Insights Air
+
+- Authentication (via LDAP/AD)
+- Authorization (based on groups from LDAP/AD)
+- Audit logging
+- Load balancing between Insight Cloak instances
+
+--
+
+## Insights Cloak
+
+- Core anonymization engine
+- Interacts with the database containing the raw data
+
+--
+
+## Data source
+
+- Roughly corresponds to a database in a database server
+- Configured at the level of Insights Cloak
+- Specifies which tables should be exposed
+- Specifies anonymization related parameters
+
+--
+
+![Image](content/images-admin/single-low.png) <!-- .element: style="max-height:600px;border:none;" -->
+
+---
+
+<!-- -- data-transition="slide-in none-out" -->
+
+## Scaling
+
+![Image](content/images-admin/single-low.png) <!-- .element: style="max-height:600px;border:none;" -->
+
+--
+
+<!-- -- data-transition="none" -->
+
+## Scaling
+
+![Image](content/images-admin/multi-low.png) <!-- .element: style="max-height:600px;border:none;" -->
+
+--
+
+<!-- -- data-transition="none" -->
+
+## Scaling
+
+![Image](content/images-admin/single-high.png) <!-- .element: style="max-height:600px;border:none;" -->
+
+--
+
+<!-- -- data-transition="none" -->
+
+## Scaling
+
+![Image](content/images-admin/multi-high.png) <!-- .element: style="max-height:600px;border:none;" -->
+
+---
+
+## Performance impact
+
+- Queries are slower than when using Toad
+- Aircloak's query rewriting increase the query complexity
+
+--
+
+## Query rewrite example
+
+![Image](content/images-admin/rewrite.png) <!-- .element: style="max-height:600px;border:none;" -->
+
+--
+
+## Where is the time spent
+
+~95% of query execution time spent in Oracle
+
+--
+
+## Improving performance
+
+- No scale-out parallelism at the level of the Insights Cloak
+  - Multiple instances to avoid single point of failure
+- Caching intermediate results with CTAS 
+- Reducing dataset (for example `SYSTEM_STACK_ID = X`) for explorative queries
+
+---
+
+## Setup at Telefonica
+
+--
+
+## Infrastructure
+
+- Kubernetes
+- Separate Postgres instance
+- LDAP
+
+--
+
+## Maintenance
+
+- All configuration files are maintained on GitLab
+- Insights Air and Insights Cloak have separate configuration files 
+- Data sources have individual configuration files
+
+Details on the configuration files later today.
+
+--
+
+## Upgrading and deploying - today
+
+1. Receive `air` and `cloak` container images from Aircloak
+2. Push them to the Telefonica Docker registry
+3. Alter Kubernetes Pod definitions
+4. Redeploy services
+
+--
+
+## Upgrading and deploying - future
+
+1. Telefonica's docker registry mirrors that of Aircloak
+3. Alter Kubernetes Pod definitions to deploy new version
+4. Redeploy services
+
+---
+
+
+
+
+
+
+
+
+## Session 2:
+# Anonymization primer and data source configuration
 
 ---
 
@@ -253,241 +402,13 @@ Yes. ~5 users bought the product. They are all hiding in a crowd.
 
 ---
 
-## Fine grained values
-
-If you have fine grained data (like for example a `timestamp`) then every value becomes a "Mega clean 2000"-equivalent.
-
---
-
-### Example: fine grained values
-
-| UserID | BirthTime              |
-|--------|-----------------------:|
-| User 1 | 1980-01-01 12:15:01.02 |
-| User 2 | 1980-02-01 02:21:00.12 |
-| User 3 | 1980-02-01 02:50:05.99 |
-| ...    | ...                    |
-| User N | 1980-12-30 18:30:05.19 |
-
---
-
-![Image](content/images/lcf-g1.png) <!-- .element: style="max-height:600px;border:none;" -->
-<!-- -- data-transition="slide-in none-out" -->
-
---
-
-![Image](content/images/lcf-g2.png) <!-- .element: style="max-height:600px;border:none;" -->
-<!-- -- data-transition="none" -->
-
---
-
-![Image](content/images/lcf-g3.png) <!-- .element: style="max-height:600px;border:none;" -->
-<!-- -- data-transition="none" -->
-
---
-
-![Image](content/images/lcf-g4.png) <!-- .element: style="max-height:600px;border:none;" -->
-<!-- -- data-transition="none" -->
-
---
-
-![Image](content/images/lcf-g5.png) <!-- .element: style="max-height:600px;border:none;" -->
-<!-- -- data-transition="none" -->
-
---
-
-![Image](content/images/lcf-g6.png) <!-- .element: style="max-height:600px;border:none;" -->
-<!-- -- data-transition="none-in slide-out" -->
-
---
-
-## What happens if we add a second category of values?
-
-- `(BirthTime, Gender)` 
-- It is more specific
-- The resulting groups are smaller
-
---
-
-![Image](content/images/lcf-g7.png) <!-- .element: style="max-height:600px;border:none;" -->
-
---
-
-## Tradeoff 
-### More columns, less results
-
---
-
-## Tradeoff 
-### More columns, less results
-
-`(zip-code, date of birth, gender)` uniquely identifies 67% of all US citizens (of which there are 329 million)!
-
---
-
-## There is a hidden attribute in your queries!
-
---
-
-## You think of your data as
-
-| Gender | BirthTime              |
-|--------|-----------------------:|
-| M      | 1980-01-01 12:15:01.02 |
-| M      | 1980-02-01 02:21:00.12 |
-| F      | 1980-02-01 02:50:05.99 |
-| ...    | ...                    |
-| F      | 1980-12-30 18:30:05.19 |
-
-<!-- -- data-transition="slide-in none-out" -->
-
---
-
-## But in reality it is
-
-| Is our customer | Gender | BirthTime              |
-|:----------------|--------|-----------------------:|
-| True            | M      | 1980-01-01 12:15:01.02 | 
-| True            | M      | 1980-02-01 02:21:00.12 |
-| True            | F      | 1980-02-01 02:50:05.99 |
-| True            | ...    | ...                    |
-| True            | F      | 1980-12-30 18:30:05.19 |
-
-<!-- -- data-transition="none-in slide-out" -->
-
---
-
-# In summary
-
-The more columns your query includes, the higher the chance
-- that the combination is identifying
-- that Aircloak will filter the data out as part of anonymization
-
----
-
-# Aggregate statistics
-
---
-
-### A histogram of salaries
-
-![Image](content/images/salaries-1.png) <!-- .element: style="max-height:600px;border:none;" -->
-<!-- -- data-transition="slide-in none-out" -->
-
---
-
-### Low count filter would suppress these
-
-![Image](content/images/salaries-2.png) <!-- .element: style="max-height:600px;border:none;" -->
-<!-- -- data-transition="none" -->
-
---
-
-### Aggregates are different
-
-![Image](content/images/salaries-3.png) <!-- .element: style="max-height:600px;border:none;" -->
-<!-- -- data-transition="none" -->
-
---
-
-### How about extreme values?
-
-![Image](content/images/salaries-4.png) <!-- .element: style="max-height:600px;border:none;" -->
-<!-- -- data-transition="none" -->
-
---
-
-### How about extreme values?
-
-![Image](content/images/salaries-5.png) <!-- .element: style="max-height:600px;border:none;" -->
-<!-- -- data-transition="none" -->
-
---
-
-### Extreme values are shifted
-
-![Image](content/images/salaries-6.png) <!-- .element: style="max-height:600px;border:none;" -->
-<!-- -- data-transition="none" -->
-
---
-
-### Extreme values are shifted
-
-![Image](content/images/salaries-7.png) <!-- .element: style="max-height:600px;border:none;" -->
-<!-- -- data-transition="none-in slide-out" -->
-
---
-
-### Adding noise
-
-![Image](content/images/aggregate-noise-1.png) <!-- .element: style="max-height:600px;border:none;" -->
-<!-- -- data-transition="slide-in none-out" -->
-
---
-
-### Noise magnitude determined by "heavy" users
-
-![Image](content/images/aggregate-noise-2.png) <!-- .element: style="max-height:600px;border:none;" -->
-<!-- -- data-transition="none" -->
-
---
-
-### Add Gaussian noise
-
-![Image](content/images/aggregate-noise-3.png) <!-- .element: style="max-height:600px;border:none;" -->
-<!-- -- data-transition="none" -->
-
---
-
-### Where the answer might be
-
-![Image](content/images/aggregate-noise-4.png) <!-- .element: style="max-height:600px;border:none;" -->
-<!-- -- data-transition="none-in slide-out" -->
-
---
-
-## Quantifying the noise
-
-`_noise` companion functions
-
---
-
-## Quantifying the noise
-
-| aggregate | noise function |
-|-----------|----------------|
-| count     | count_noise    |
-| sum       | sum_noise      |
-| avg       | avg_noise      |
-| stddev    | stddev_noise   |
-| min       |                |
-| max       |                |
-
-<!-- -- data-transition="slide-in none-out" -->
-
---
-
-## Quantifying the noise
-
-| aggregate | noise function |
-|-----------|----------------|
-| count     | count_noise    |
-| sum       | sum_noise      |
-| avg       | avg_noise      |
-| stddev    | stddev_noise   |
-| min       | ???            |
-| max       | ???            |
-
-<!-- -- data-transition="none-in slide-out" -->
-
----
-
 ## User ids and anonymization
 
 - Aircloak builds groups to allow individuals to hide
-- Aircloak uses user ids to determine if a group is large enough
+- Aircloak uses __user ids__ to determine if a group is large enough
+- The data source configuration specifies which column contains the __user ids__
 
---
+---
 
 ## Types of tables
 
@@ -522,9 +443,138 @@ The more columns your query includes, the higher the chance
 
 --
 
-## Queries over personal data must include a user-id column
+## Check-list: personal or not
+
+- Does the data contain PII? ---> personal
+- Does the data belong to an individual? ---> personal
+- Is the data general facts? ---> non-personal
 
 --
+
+## Personal or not quiz
+
+--
+
+## Personal or not - 1
+
+A table containing `names` and `phone numbers`.
+
+Personal <!-- .element: class="fragment" -->
+
+--
+
+## Personal or not - 2
+
+A table with a mapping from `country name` to `national anthem`.
+
+Non-personal <!-- .element: class="fragment" -->
+
+--
+
+## Personal or not - 3
+
+A table with a mapping from a `customer` to `national anthem`.
+
+Personal <!-- .element: class="fragment" -->
+
+--
+
+## Personal or not - 4
+
+A table containing a `contract_id` for a cellphone contract.
+
+Personal <!-- .element: class="fragment" -->
+
+--
+
+## Personal or not - 5
+
+A table containing a `product_id` and `product_description`.
+
+Non-personal <!-- .element: class="fragment" -->
+
+--
+
+## Personal or not - 6
+
+A table containing a mapping from `contract_id` to `product_id`
+
+Personal <!-- .element: class="fragment" -->
+
+--
+
+## Queries over personal data must include a user-id column
+
+But what is the table does not have a __user id__ column?
+
+---
+
+## Keys
+
+- Keys specify which column contains the __user_id__.
+
+<!-- -- data-transition="slide-in none-out" -->
+
+--
+
+## Keys
+
+- Keys specify which column contains the __user_id__.
+
+Additionally:
+
+- Specify how personal tables can be joined
+- Specify how non-personal and personal tables can be joined
+- Usually (but not restricted to) foreign keys 
+
+<!-- -- data-transition="none-in slide-out" -->
+
+--
+
+![Image](content/images/data-model-3.png) <!-- .element: style="max-height:600px;border:none;" -->
+
+--
+
+## Keys - user-id
+
+- Key name: `user_id`
+- Reserved for the columns that contain the logical user identifier
+
+---
+
+## Configuring data sources
+
+--
+
+## Data source definition
+
+- Data sources are defined in json files
+- One data source per file
+
+-- 
+
+## Data source skeleton
+
+```json
+{
+  "name": "DataSourceName",
+  "driver": "oracle",
+  "parameters": {
+    "hostname": string,
+    "port": integer,
+    "username": string,
+    "database": string,
+    "password": string
+  },
+  "analyst_tables_enabled": true,
+  "tables": {
+    ...
+  }
+}
+```
+
+--
+
 
 ## Example 1
 
