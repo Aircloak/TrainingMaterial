@@ -91,6 +91,7 @@ Every item that complicates a system should justify its existence
 - Install once, run any query
 - Real-time access to work on live production data
 - No need to maintain a separate copy of data
+- At the cost of slightly harder query writing experience
 
 --
 

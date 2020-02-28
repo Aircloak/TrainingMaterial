@@ -79,6 +79,44 @@ Before we start
 
 ---
 
+## Why should we care?
+
+--
+
+## What value does it bring?
+
+Every item that complicates a system should justify its existence
+
+--
+
+## Gaining access to data
+
+- Data protection is important – yet difficult
+- Alternatives are:
+  - Explicitly given informed concent
+  - Not working with data
+  - Breaking the law
+  - Anonymizing data
+
+--
+
+## Anonymization is difficult
+
+- Anonymization tends to be done on a case-by-case basis
+- The turnaround time from idea to can be in weeks or months rather than minutes
+- Analyst spend time manually anonymizing data rather than do analysis
+
+--
+
+## Aircloak
+
+- Data agnostic anonymization
+- Use case agnostic anonymization
+- Install once, run any query
+- Real-time access to work on live production data
+- At the cost of slightly harder query writing experience
+
+--
 
 ## Session 1: 
 # Anonymization
