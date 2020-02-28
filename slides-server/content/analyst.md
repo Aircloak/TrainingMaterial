@@ -93,10 +93,18 @@ Every item that complicates a system should justify its existence
 
 - Data protection is important – yet difficult
 - Alternatives are:
-  - Explicitly given informed concent
+  - Legitimate interest
+  - Performance of contract
+  - Explicitly given informed consent
   - Not working with data
   - Breaking the law
   - Anonymizing data
+
+--
+
+## Anonymization
+
+Anonymization allows you to not have to argue about legitimate interest or consent.
 
 --
 
