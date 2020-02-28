@@ -1,7 +1,7 @@
 # Admin training
 ## Aircloak Insights
 
-Telefonica – March 2nd 2020
+Telefonica – 2nd of March 2020
 
 ---
 
@@ -266,7 +266,7 @@ More generally some form of aggregation and distortion:
 
 ## Maintenance
 
-- All configuration files are maintained on GitLab
+- All configuration files (including data source definitions) are maintained on GitLab
 - Insights Air and Insights Cloak have separate configuration files 
 - Data sources have individual configuration files
 
@@ -288,6 +288,14 @@ Details on the configuration files later today.
 1. Telefonica's docker registry mirrors that of Aircloak
 3. Alter Kubernetes Pod definitions to deploy new version
 4. Redeploy services
+
+--
+
+## CAUTION!
+
+- Insights Air automatically migrates the database schema upon being run!
+- Downgrading to a previous version is non-trivial
+- __Take a database backup before upgrading!__
 
 ---
 
@@ -410,6 +418,217 @@ Yes. ~5 users bought the product. They are all hiding in a crowd.
 
 ---
 
+## How to choose a user-id
+
+--
+
+## Choosing a user id
+
+Ideally it is obvious. That is when there is a `user-id`, `client-id`, or `customer-id` column.
+
+Reality is seldom obvious.
+
+--
+
+#### Choosing a user id 
+## Hierarchies
+
+- Client
+- Party
+- Contract
+
+Assumption: there is a one to many relationship between the hierarchies. One client has many parties, one party has many contracts, etc.
+
+--
+
+#### Choosing a user id 
+## Hierarchies gotchas
+
+You cannot safely expose tables with data at the level of the higher up hierarchies. These will not be adequately protected. 
+
+Example: If you use __Party__ as the source of your user id, then tables at the level of __Client__ are not protected.
+
+--
+
+#### Choosing a user id 
+## Hierarchies tradeof
+
+Choosing the top-level hierarchy is generally ideal. In practise this hierarchy might be sparcely populated. Aircloak filters out data where the user-id is empty.
+
+It's a tradeof between which tables can be made available and how much of the data in the exposed tables is available for analysis.
+
+--
+
+#### Choosing a user id 
+## Multiple entity classes
+
+The dataset might contain different classes of entities that should be protected. For example vendors vs clients.
+Aircloak is designed to protect one type of entity.
+
+__OK IFF__: the tables do not overlap or contain data about more than one entity class
+
+--
+
+#### Choosing a user id 
+## Multiple entity classes - solution
+
+Create separate data sources per entity class. Ensure the data exposed is only referring to the specified entity class and not another.
+
+--
+
+#### Choosing a user id 
+## Multiple users per row
+
+Aircloak is built on the assumption that a database row belongs to a single individual.
+
+This does not hold true for transaction data:
+- A called B
+- A sent money to B, etc
+
+--
+
+#### Choosing a user id 
+## Multiple users per row - solution A
+
+The solution today is to split such tables in two such that each half only contains the data belonging to one of the users. Shared data can be made available in all tables.
+
+--
+
+#### Choosing a user id 
+## Multiple users per row - solution B
+
+The solution in the future is to split such tables in multiple parts. 
+Each part contains the data for one of the user, and has the columns containing data about the other users greylisted.
+
+This will be possible in Aircloak version `20.2`
+
+---
+
+## Configuring data sources
+
+--
+
+## Data source definition
+
+- Data sources are defined in json files
+- One data source per file
+
+--
+
+## JSON
+
+- JSON is a structured way to encode data
+- It consists of "objects" which are a set of key-value pairs
+- The values can themselves be objects in their own right
+
+--
+
+## JSON - Example
+
+An object is denoted by curly brackets `{` and `}`:
+
+```json
+{
+
+}
+```
+
+<!-- -- data-transition="slide-in none-out" -->
+
+--
+
+## JSON - Example
+
+Objects contain key-value pairs:
+
+```json
+{
+  "organization_name": "Telefonica"
+}
+```
+
+<!-- -- data-transition="none" -->
+
+--
+
+## JSON - Example
+
+Objects contain key-value pairs:
+
+```json
+{
+  "organization_name": "Telefonica"
+  "office": "Munich",
+  "metadata": {
+    "uses": "Aircloak",
+    "running": true,
+    "instances": 1
+  }
+}
+```
+
+<!-- -- data-transition="none" -->
+
+--
+
+## JSON - Example
+
+Values can also be lists:
+
+```json
+{
+  "organization_name": "Telefonica"
+  "office": "Munich",
+  "metadata": {
+    "uses": "Aircloak",
+    "running": true,
+    "instances": 1
+  },
+  "brands": ["Telefonica", "O2", "Others..."]
+}
+```
+
+<!-- -- data-transition="none-in slide-out" -->
+
+--
+
+## Data source skeleton
+
+```json
+{
+  "name": "DataSourceName",
+  "driver": "oracle",
+  "parameters": {
+    "hostname": string,
+    "port": integer,
+    "username": string,
+    "database": string,
+    "password": string
+  },
+  "analyst_tables_enabled": true,
+  "tables": {
+    ... the interesting part ...
+  }
+}
+```
+
+--
+
+## Tables
+
+```json
+"tables": {
+  "tablenameShownInAircloak": {
+    "db_name": "tablenameUsedInDatabase",
+    "content_type": "personal" | "non-personal",
+    ...
+  },
+  ...
+}
+```
+
+--
+
 ## Types of tables
 
 ![Image](content/images/personal-vs-non-personal.png) <!-- .element: style="max-height:600px;border:none;" -->
@@ -505,534 +724,322 @@ Personal <!-- .element: class="fragment" -->
 
 ## Queries over personal data must include a user-id column
 
-But what is the table does not have a __user id__ column?
-
----
-
-## Keys
-
-- Keys specify which column contains the __user_id__.
-
-<!-- -- data-transition="slide-in none-out" -->
+- How do I configure which is the __user id__ column?
+- What if the table does not have a __user id__ column?
 
 --
 
-## Keys
-
-- Keys specify which column contains the __user_id__.
-
-Additionally:
-
-- Specify how personal tables can be joined
-- Specify how non-personal and personal tables can be joined
-- Usually (but not restricted to) foreign keys 
-
-<!-- -- data-transition="none-in slide-out" -->
-
---
-
-![Image](content/images/data-model-3.png) <!-- .element: style="max-height:600px;border:none;" -->
-
---
-
-## Keys - user-id
-
-- Key name: `user_id`
-- Reserved for the columns that contain the logical user identifier
-
----
-
-## Configuring data sources
-
---
-
-## Data source definition
-
-- Data sources are defined in json files
-- One data source per file
-
--- 
-
-## Data source skeleton
+## Tables
 
 ```json
-{
-  "name": "DataSourceName",
-  "driver": "oracle",
-  "parameters": {
-    "hostname": string,
-    "port": integer,
-    "username": string,
-    "database": string,
-    "password": string
-  },
-  "analyst_tables_enabled": true,
-  "tables": {
+"tables": {
+  "tablenameShownInAircloak": {
+    "db_name": "tablenameUsedInDatabase",
+    "content_type": "personal" | "non-personal",
+    "keys": [{"key_type_1": "column_name_1"}, ...],
     ...
-  }
+  },
+  ...
 }
 ```
 
 --
 
+## Keys
 
-## Example 1
+- Keys specify which column contains the __user_id__.
+- Specify how personal tables can be joined <!-- .element: class="fragment" -->
+- Specify how non-personal and personal tables can be joined <!-- .element: class="fragment" -->
+- Usually (but not restricted to) foreign keys  <!-- .element: class="fragment" -->
 
-```sql
-SELECT users.userId, users.name, count(*)
-FROM users
-GROUP BY users.userId, users.name
+--
+
+![Image](content/images/data-source.png) <!-- .element: style="max-height:600px;border:none;" -->
+
+--
+
+## Keys - definition
+
+- A key is a tuple: `{"<Key-Name>": "<Column-Name>"}`
+- Each column can only have one key
+- Multiple columns in a table can share the same `key-type`
+
+--
+
+## Keys example
+
+`Purchases` table:
+
+```json
+"keys": [
+  {"user_id": "UserId"},
+  {"purchase_id": "PurchaseId"}
+]
+```
+
+`LineItems` table:
+
+```json
+"keys": [
+  {"purchase_id": "PurchaseId"},
+  {"product_id": "ProductId"}
+]
 ```
 
 --
 
-## Example 2
+## Tables - inline query
 
-```sql
-SELECT users.name, count(*)
-FROM users
-GROUP BY users.name
-```
+`query` as an alternative to `db_name`:
 
---
-
-## Example 3
-
-```sql
-SELECT count(purchases.id)
-FROM purchases
-```
-
---
-
-## Example 4 - not valid
-
-```sql
-SELECT count(lineItems.id)
-FROM lineItems
-```
-
-Remember: each query over a personal table must have a user-id column.
-
---
-
-## Example 4 - solution
-
-Include a `JOIN` to a table with a `UserId` column:
-
-```sql
-SELECT count(*)
-FROM lineItems inner join purchases
-  ON lineItems.purchaseId = purchases.purchaseId
-```
-
---
-
-## non-personal tables
-
-```sql
-SELECT products.productName
-FROM products
-```
-
-No personal data = no anonymization required
-
---
-
-## Unless...
-
-non-personal tables become personal if combined with a personal table!
-
-![Image](content/images/tainted.png) <!-- .element: style="max-height:600px;border:none;" -->
-
---
-
-## Combining table types
-
-Not allowed:
-
-```sql
-SELECT products.productName, count(*)
-FROM products INNER JOIN lineItems
-  ON products.productId = lineItems.productId
-```
-
---
-
-## Combining table types
-
-Allowed:
-
-```sql
-SELECT products.productName, count(*)
-FROM products INNER JOIN lineItems
-  ON products.productId = lineItems.productId
-  INNER JOIN purchases 
-  ON lineItems.purchaseId = purchases.purchaseId 
+```json
+"tables": {
+  "tablenameShownInAircloak": {
+    "query": "
+      SELECT cast(t2.uid as integer), t2.age, t1.*
+      FROM t1 INNER JOIN t2 ON t1.pk = t2.fk
+      WHERE t2.age > 18
+    ",
+    "content_type": "personal" | "non-personal",
+    "keys": [{"key_type_1": "column_name_1"}, ...],
+    ...
+  },
+  ...
+}
 ```
 
 ---
 
-## Types of queries
+## Analysis queries
+
+- Aircloak runs background analysis queries
+- A set of queries will be run against each column of a data source 
+- The results of these influence the functionality and the restrictions applied
 
 --
 
-![Image](content/images/query-types-1.png) <!-- .element: style="max-height:600px;border:none;" -->
-<!-- -- data-transition="slide-in none-out" -->
+## Types of analysis queries
+
+- Isolating column analysis
+- Shadow database
+- Bounds checks
 
 --
 
-![Image](content/images/query-types-2.png) <!-- .element: style="max-height:600px;border:none;" -->
-<!-- -- data-transition="none" -->
+## Analysis - isolating columns
+
+- Detects if a column a quasi-identifier (i.e. on par with the user id column)
+- Isolating columns underly additional query restrictions
 
 --
 
-![Image](content/images/query-types-3.png) <!-- .element: style="max-height:600px;border:none;" -->
-<!-- -- data-transition="none" -->
+## Analysis - isolating columns - disabling
 
---
+The analysis is on by default. It can be disabled on a per table basis:
 
-![Image](content/images/query-types-4.png) <!-- .element: style="max-height:600px;border:none;" -->
-<!-- -- data-transition="none-in slide-out" -->
-
---
-
-## Why do I need to know
-
-- Knowing when anonymization takes place is important for good query results
-- Unrestricted queries do not underly Aircloak query restrictions
-
---
-
-## Anonymizing vs non-anonymizing
-
---
-
-![Image](content/images/query-transformation-1.png) <!-- .element: style="max-height:600px;border:none;" -->
-
---
-
-### Non-anonymizing restricted query
-
-```sql
-SELECT 
-  purchases.userId, 
-  count(distinct purchases.PurchaseId) as numPurchases
-FROM purchases
-GROUP BY purchases.userId
-
+```json
+"tableName": {
+  "auto_isolating_column_classification": false,
+  ...
+},
 ```
 
 --
 
-![Image](content/images/query-transformation-2.png) <!-- .element: style="max-height:600px;border:none;" -->
+## Analysis - isolating columns - manual classification
+
+You can manually classify whether a column is isolating or not.
+
+```json
+"tableName": {
+  "isolating_columns": {"telephone_number": true, "first_name": false},
+  ...
+},
+```
+
+- A column that has not been manually classified will be treated as isolating if 
+  automatic classification has been disabled. 
+- If automatic classification is enabled a column will be treated as isolating 
+  until the system has classified it.
 
 --
 
-### Anonymizing restricted query
+## Shadow Database
 
-```sql
-SELECT count(distinct purchases.PurchaseId) as numOfPurchases
-FROM purchases
+- The Cloak maintains a list of the most popular terms per column
+- These values are used to determine whether negative `WHERE`-clauses or `column IN (...)`
+  are allowed or not
+
+--
+
+## Shadow Database - disabling
+
+- The analysis can be disabled on a per-table basis
+
+```json
+"tableName": {
+  "maintain_shadow_db": false,
+  ...
+},
 ```
 
 --
 
-## Examples of query types
+## Bounds checks
+
+- The Cloak maintains a set of anonymized minimum and maximum values per numerical column
+- These are used in static analysis of queries to determine if a query construct might overflow 
+  or underflow and lead to an exception in the database
+- Potential over or underflow lead to Aircloak using safe (but slow) alternatives to functions
 
 --
 
-### Restricted query
-## Anonymizing 
+## Bounds checks - disabling
 
-- A query that **aggregates or groups** across multiple distinct users
+- Bounds analyses can be enabled or disabled on the level of a data source (not table)
 
-```sql
-SELECT users.name, count(users.userId) as numUsers
-FROM users
-GROUP BY users.name
+```json
+{
+  "name": "DataSourceName",
+  "driver": "oracle",
+  "parameters": ...,
+  "analyst_tables_enabled": true,
+  "tables": ...,
+  "bound_computation_enabled": false
+}
 ```
 
 --
 
-### Restricted query
-## Non-anonymizing 
+## Analysis summary
 
-- Only useful as sub-queries!
-- Aircloak will try to anonymize the results if it is the top-level query
-
---
-
-### Restricted query
-## Non-anonymizing 
-
-- Operates on the data of a single user
-
-```sql
-SELECT purchases.UserId, count(*) as numPurchases
-FROM purchases
-GROUP BY purchases.UserId
-```
-
---
-
-## Unrestricted queries
-
-- A query that operates on non-personal data 
-- A query that operates on an already anonymous result
-
-```sql
-SELECT products.productName
-FROM products 
-```
-
---
-
-## Let's combine them!
-
---
-
-## A restricted query:
-
-```sql
--- Non-anonymizing restricted query
-SELECT purchases.userId, lineItems.productId, count(*) as purchasedByUser
-FROM lineItems li INNER JOIN purchases p
-  ON li.purchaseId = p.purchaseId
-GROUP BY purchases.userId, lineItems.productId
-```
-
---
-
-## ... within an anonymizing query
-
-```sql
--- Anonymizing restricted query
-SELECT 
-  perUser.productId, 
-  perUser.numPurchases, 
-  count(*)
-FROM (
-  -- Non-anonymizing restricted query
-  SELECT purchases.userId, lineItems.productId, count(*) as numPurchases
-  FROM lineItems li INNER JOIN purchases p
-    ON li.purchaseId = p.purchaseId
-  GROUP BY purchases.userId, lineItems.productId
-) as perUser
-GROUP BY
-  perUser.productId, 
-  perUser.numPurchases
-```
-
---
-
-![Image](content/images/anon-graphed.png) <!-- .element: style="max-height:600px;border:none;" -->
-
---
-
-## ... within an unrestricted query!
-
-```sql
--- Unrestricted query
-SELECT anonResult.productId
-FROM (
-  -- Anonymizing restricted query
-  SELECT 
-    perUser.productId, 
-    perUser.numPurchases, 
-    count(*)
-  FROM (
-    -- Non-anonymizing restricted query
-    SELECT purchases.userId, lineItems.productId, count(*) as numPurchases
-    FROM lineItems li INNER JOIN purchases p
-      ON li.purchaseId = p.purchaseId
-    GROUP BY purchases.userId, lineItems.productId
-  ) as perUser
-  GROUP BY
-    perUser.productId, 
-    perUser.numPurchases
-) anonResult
-HAVING SUM(anonResult.numPurchases) * SUM(anonResult.count) > 100
-```
-
---
-
-![Image](content/images/query-types-transition.png) <!-- .element: style="max-height:600px;border:none;" -->
-
---
-
-## Quiz time
-
---
-
-## Data model refresher
-
-![Image](content/images/data-model-3.png) <!-- .element: style="max-height:600px;border:none;" -->
-
---
-
-## Restricted or un-restricted?
-
-```sql
-SELECT count(*)
-FROM products
-```
-
---
-
-## Anonymizing or non-anonymizing 
-
-```sql
-SELECT count(purchases.UserId)
-FROM purchases
-```
-
---
-
-## Anonymizing or non-anonymizing sub-query
-
-```sql
-SELECT purchases.userId, count(lineItems.purchaseId) as numLineItems
-FROM purchases p INNER JOIN lineItems li
-  ON p.purchaseId = li.purchaseId
-GROUP BY purchases.userId
-```
-
---
-
-## Good job!
+- Analysis queries can be computationally expensive to run
+- Aircloak attempts to run as few as possible
+- We recommend enabling rather than disabling analysis queries where possible
+- The system will function even with analyses queries disabled
 
 ---
 
 ## Break
 
+---
 
 
 
+## Session 3:
+# Supporting yourself and others
 
-
-
+Common mistakes, problems, and gotcha's.
 
 ---
 
-## Session 2: 
-# Querying with Aircloak
-
----
-
-## SQL
-
-Aircloak supports a subset of standard SQL.
-
-Docs are a useful resource.
-
----
-
-## Differences to Oracle 
-
-- Limited OR functionality
-- No WINDOW function support
-- Some function names differ slightly
-
----
-
-## Differences to Oracle - truncation of timestamps
-
-- `date_trunc` for truncating for dates and times 
-
-| Oracle                  | Aircloak                 |
-|-------------------------|--------------------------|
-| trunc(c, 'yyyy')        | date_trunc('year', c)    |
-| trunc(c, 'q')           | date_trunc('quarter', c) |
-| trunc(c, 'mm')          | date_trunc('month', c)   |
-| trunc(c, 'dd')          | date_trunc('day', c)     |
-| trunc(c, 'hh')          | date_trunc('hour', c)    |
-| trunc(c, 'mi')          | date_trunc('minute', c)  |
-| cast(c as timestamp(0)) | date_trunc('second', c)  |
+## "Why are all the rows anonymized away!?"
 
 --
 
-## Importance of `date_trunc`
+### Fine grained values
 
-![Image](content/images/lcf-g4.png) <!-- .element: style="max-height:600px;border:none;" -->
+| UserID | BirthTime              |
+|--------|-----------------------:|
+| User 1 | 1980-01-01 12:15:01.02 |
+| User 2 | 1980-02-01 02:21:00.12 |
+| User 3 | 1980-02-01 02:50:05.99 |
+| ...    | ...                    |
+| User N | 1980-12-30 18:30:05.19 |
+
+--
+
+![Image](content/images/lcf-g1.png) <!-- .element: style="max-height:600px;border:none;" -->
 <!-- -- data-transition="slide-in none-out" -->
 
 --
 
-## Importance of `date_trunc`
-
-![Image](content/images/lcf-g5.png) <!-- .element: style="max-height:600px;border:none;" -->
-<!-- -- data-transition="none-in slide-out" -->
-
---
-
-## Differences to Oracle - `bucket`
-
-- Aircloak has a `bucket` function
-- It groups values to a grid
-- It used like this: `bucket(column by gridSize)`
-
---
-
-## Visualizing `bucket`
-
-![Image](content/images/bucket-before.png) <!-- .element: style="max-height:600px;border:none;" -->
-<!-- -- data-transition="slide-in none-out" -->
-
---
-
-## Visualizing `bucket`
-
-![Image](content/images/bucket-down.png) <!-- .element: style="max-height:600px;border:none;" -->
+![Image](content/images/lcf-g2.png) <!-- .element: style="max-height:600px;border:none;" -->
 <!-- -- data-transition="none" -->
 
 --
 
-## Visualizing `bucket`
-
-![Image](content/images/bucket-mid.png) <!-- .element: style="max-height:600px;border:none;" -->
+![Image](content/images/lcf-g3.png) <!-- .element: style="max-height:600px;border:none;" -->
 <!-- -- data-transition="none" -->
 
 --
 
-## Visualizing `bucket`
+![Image](content/images/lcf-g4.png) <!-- .element: style="max-height:600px;border:none;" -->
+<!-- -- data-transition="none" -->
 
-![Image](content/images/bucket-up.png) <!-- .element: style="max-height:600px;border:none;" -->
+--
+
+![Image](content/images/lcf-g5.png) <!-- .element: style="max-height:600px;border:none;" -->
+<!-- -- data-transition="none" -->
+
+--
+
+![Image](content/images/lcf-g6.png) <!-- .element: style="max-height:600px;border:none;" -->
 <!-- -- data-transition="none-in slide-out" -->
 
 --
 
-## Importance of `bucket`
+## What happens if we add a second category of values?
 
-![Image](content/images/lcf-g4.png) <!-- .element: style="max-height:600px;border:none;" -->
+- `(BirthTime, Gender)` 
+- It is more specific
+- The resulting groups are smaller
+
+--
+
+![Image](content/images/lcf-g7.png) <!-- .element: style="max-height:600px;border:none;" -->
+
+--
+
+## Tradeoff 
+### More columns, less results
+
+--
+
+## Tradeoff 
+### More columns, less results
+
+`(zip-code, date of birth, gender)` uniquely identifies 67% of all US citizens (of which there are 329 million)!
+
+--
+
+## There is a hidden attribute in your queries!
+
+--
+
+## You think of your data as
+
+| Gender | BirthTime              |
+|--------|-----------------------:|
+| M      | 1980-01-01 12:15:01.02 |
+| M      | 1980-02-01 02:21:00.12 |
+| F      | 1980-02-01 02:50:05.99 |
+| ...    | ...                    |
+| F      | 1980-12-30 18:30:05.19 |
+
 <!-- -- data-transition="slide-in none-out" -->
 
 --
 
-## Importance of `bucket`
+## But in reality it is
 
-![Image](content/images/lcf-g5.png) <!-- .element: style="max-height:600px;border:none;" -->
+| Is our customer | Gender | BirthTime              |
+|:----------------|--------|-----------------------:|
+| True            | M      | 1980-01-01 12:15:01.02 | 
+| True            | M      | 1980-02-01 02:21:00.12 |
+| True            | F      | 1980-02-01 02:50:05.99 |
+| True            | ...    | ...                    |
+| True            | F      | 1980-12-30 18:30:05.19 |
+
 <!-- -- data-transition="none-in slide-out" -->
 
 --
 
-## Differences to Oracle 
+# In summary
 
-| Oracle      | Aircloak |
-|-------------|----------|
-| STDDEV_SAMP | stddev   |
-| VAR_SAMP    | variance |
-
---
-
-## Differences to Oracle - `ilike`
-
-- Aircloak supports case insensitive LIKE
-
-| Oracle                    | Aircloak            |
-|---------------------------|---------------------|
-|       col LIKE 'pattern'  | col  LIKE 'pattern' |
-| LOWER(col) LIKE 'pattern' | col ILIKE 'pattern' |
+The more columns your query includes, the higher the chance
+- that the combination is identifying
+- that Aircloak will filter the data out as part of anonymization
 
 ---
 
@@ -1085,6 +1092,124 @@ Aircloak can only determine the rows to return after the full anonymization has 
 ## Accounting for effects of anonymization - `*`
 
 ![Image](content/images/star-row.png) <!-- .element: style="max-height:600px;border:none;" -->
+
+---
+
+# Aggregate statistics
+
+--
+
+### A histogram of salaries
+
+![Image](content/images/salaries-1.png) <!-- .element: style="max-height:600px;border:none;" -->
+<!-- -- data-transition="slide-in none-out" -->
+
+--
+
+### Low count filter would suppress these
+
+![Image](content/images/salaries-2.png) <!-- .element: style="max-height:600px;border:none;" -->
+<!-- -- data-transition="none" -->
+
+--
+
+### Aggregates are different
+
+![Image](content/images/salaries-3.png) <!-- .element: style="max-height:600px;border:none;" -->
+<!-- -- data-transition="none" -->
+
+--
+
+### How about extreme values?
+
+![Image](content/images/salaries-4.png) <!-- .element: style="max-height:600px;border:none;" -->
+<!-- -- data-transition="none" -->
+
+--
+
+### How about extreme values?
+
+![Image](content/images/salaries-5.png) <!-- .element: style="max-height:600px;border:none;" -->
+<!-- -- data-transition="none" -->
+
+--
+
+### Extreme values are shifted
+
+![Image](content/images/salaries-6.png) <!-- .element: style="max-height:600px;border:none;" -->
+<!-- -- data-transition="none" -->
+
+--
+
+### Extreme values are shifted
+
+![Image](content/images/salaries-7.png) <!-- .element: style="max-height:600px;border:none;" -->
+<!-- -- data-transition="none-in slide-out" -->
+
+--
+
+### Adding noise
+
+![Image](content/images/aggregate-noise-1.png) <!-- .element: style="max-height:600px;border:none;" -->
+<!-- -- data-transition="slide-in none-out" -->
+
+--
+
+### Noise magnitude determined by "heavy" users
+
+![Image](content/images/aggregate-noise-2.png) <!-- .element: style="max-height:600px;border:none;" -->
+<!-- -- data-transition="none" -->
+
+--
+
+### Add Gaussian noise
+
+![Image](content/images/aggregate-noise-3.png) <!-- .element: style="max-height:600px;border:none;" -->
+<!-- -- data-transition="none" -->
+
+--
+
+### Where the answer might be
+
+![Image](content/images/aggregate-noise-4.png) <!-- .element: style="max-height:600px;border:none;" -->
+<!-- -- data-transition="none-in slide-out" -->
+
+--
+
+## Quantifying the noise
+
+`_noise` companion functions
+
+--
+
+## Quantifying the noise
+
+| aggregate | noise function |
+|-----------|----------------|
+| count     | count_noise    |
+| sum       | sum_noise      |
+| avg       | avg_noise      |
+| stddev    | stddev_noise   |
+| min       |                |
+| max       |                |
+
+<!-- -- data-transition="slide-in none-out" -->
+
+--
+
+## Quantifying the noise
+
+| aggregate | noise function |
+|-----------|----------------|
+| count     | count_noise    |
+| sum       | sum_noise      |
+| avg       | avg_noise      |
+| stddev    | stddev_noise   |
+| min       | ???            |
+| max       | ???            |
+
+<!-- -- data-transition="none-in slide-out" -->
+
 
 --
 
@@ -1147,346 +1272,25 @@ Read a count of 2 as meaning:
 | max(mileage)    | null         |        |
 | min(mileage)    | null         |        |
 
---
-
-## Filtering insignificant aggregates - low counts
-
-You can filter out aggregates that are not meaningful.
-
-```sql
-SELECT salary, count(*)
-FROM salaries
-GROUP BY salary
-HAVING count(*) > 10
-```
-
---
-
-## Filtering insignificant aggregates - noisy results
-
-You can filter out aggregates where the noise dominates.
-
-```sql
-SELECT salary, count(*)
-FROM salaries
-GROUP BY salary
--- Signal to noise ratio better than 10
-HAVING count(*) / count_noise(*) > 10
-```
-
 ---
 
-## Working with freeform text
-
-User provided text could be considered as a relatively strong pseudorandom numbger generator...
-
-```sql
-SELECT freetextColumn, ...
-FROM table
-```
-
-All results will get anonymized away
+# Concepts and configuration
 
 --
 
-## Working with freeform text
-
-![Image](content/images/lcf-g4.png) <!-- .element: style="max-height:600px;border:none;" -->
+## Authentication and Authorization
 
 --
 
-## Extract parts of text
-
-- `substring`
-- `left`
-- `right`
+## LDAP vs local users
 
 --
 
-## Filter based on text
-
-- `like`
-- `ilike`
-
-```sql
-SELECT some, columns, aggregates(...)
-FROM tables...
-WHERE freetextColumn ILIKE '%thank you%'
-GROUP BY ...
-```
+## App logins and API tokens
 
 --
 
-## Building co-horts
-
-```sql
-SELECT DISTINCT userId 
-FROM table
-WHERE freetextColumn ILIKE '%thank you%'
-```
-
---
-
-## Building co-horts
-
-```sql
-SELECT some, columns, aggregates(...)
-FROM table INNER JOIN (
-  SELECT DISTINCT userId 
-  FROM table
-  WHERE freetextColumn ILIKE '%thank you%'
-) thankfulUsers ON table.userId = thankfulUsers.userId
-GROUP BY ...
-```
-
---
-
-## Extract common logic 
-
-- into views
-- into table ("create table as select")
-
---
-
-## Extract common logic 
-
-# Demo
-
----
-
-## Restrictions
-
-- All restrictions for anonymization purposes
-- Over time some might be removed or softened.
-- Restrictions only apply in anonymizing and restricted queries.
-
---
-
-## Most commonly noticed restrictions
-
-- OR-functionality
-- Ranges
-
---
-
-## OR-functionality
-
-- heavily restricted
-- support for `IN` in the `WHERE`-clause
-- support for simplified `CASE`-statements
-  - inside aggregate in the anonymizing query
-  - as selected column in the anonymizing query
-
---
-
-## Ranges
-
-- Ranges containing constants must be bounded
-
-```sql
--- Allowed - bounded
-WHERE age BETWEEN 10 and 20
-
--- Not allowed - not bounded
-WHERE age > 10
-```
-
---
-
-## Ranges
-
-- Column inequalities are allowed
-
-```sql
--- Allowed - no constant 
-WHERE salary < age
-```
-
---
-
-## Ranges - snapping
-
-- Range boundaries must fall on a grid "1, 2, 5"-grid
-
---
-
-## Ranges - snapping - 1, 2, 5
-
-Allowed values:
-- ..., 0.1, 0.2, 0.5, 1, 2, 5, 10, 20, 50, 100, 200, 500, ...
-
---
-
-## Ranges - snapping - 1, 2, 5
-
-```sql
-WHERE age BETWEEN 11 and 19
-```
-
-becomes
-
-```sql
-WHERE age BETWEEN 10 and 20
-```
-
---
-
-## Ranges - snapping - 1, 2, 5
-
-Similarly dates are also snapped to a 1, 2, 5 grid.
-
---
-
-## Full list of restrictions are in the documentation
-
----
-
-## What is next?
-
-After the break we will have a practical session.
-
-First to solve the task wins a Grand Price!
-
----
-
-# Break
-
----
-
-## Session 3: 
-# Practical session!
-
----
-
-## Scenario
-
-- We are data scientists at Berka Bank 
-- We want to figure out:
-  - Which customer group brings in the most revenue as a group
-  - Which customer group brings in the most revenue per member
-- "Customer group" is defined by their credit card type
-
---
-
-### "Facts"
-
-- We charge 1% interest on credit card transactions
-- The transactions we care about are the "expense"-transactions (`type = 'VYDAJ'`)
-
---
-
-## Data model
-
-![Image](content/images/task3-schema.png) <!-- .element: style="max-height:600px;border:none;" -->
-
---
-
-## Sample Jupyter Notebook
-
-https://download.aircloak.com/analyst-training/
-
---
-
-## Where is the data?
-
-- URL: https://demo.aircloak.com
-- Username: your email address
-- Password: `telefonica1234`
-
---
-
-## Data model + task
-
-<div>
-  <img src="content/images/task3-schema.png"
-    style="border: none; max-width: 22vw; float:left"
-  >
-
-  <div style="float:left; width: 22vw; padding: 2rem">
-    <ul>
-      <li>We charge 1% interest on credit card transactions (`type = 'VYDAJ'`)</li>
-      <li>Which customer group (credit card type) brings in the most revenue: as a group, per customer</li>
-    </ul>
-  </div>
-</div>
-
---
-
-## Solution walk-through 
-
----
-
-# Break
-
----
-
-## Session 4: 
-# Practical details
-
----
-
-## Telefonica's Aircloak instance
-
-- Web interface: http://demucdnhkm01.dcn.de.pri.o2.com:30080
-- Postgres interface: demucdnhkm01.dcn.de.pri.o2.com:300801
-  - See sample Python notebook from practical session
-  - https://download.aircloak.com/analyst-training/
-- Documentation: http://demucdnhkm01.dcn.de.pri.o2.com:30080/docs
-
----
-
-## How do I get access
-
-1. Open a JIRA request in DWH Services Infrastructure (DWHI) stating the names of the data sources
-2. "Grant access to aircloak"
-3. Add component "aircloak"
-
----
-
-## I need other data, what to do
-
-1. Open a JIRA request in DWH Services Infrastructure (DWHI) stating the DBMS object names
-2. "Include objects into Aircloak",
-3. Add component "aircloak"
-
----
-
-## I need a specific feature
-
-There are three ways working around missing features
-
-1. __Fast__: Sometimes it's a matter of reformulating the query
-2. __Medium__: Create views in Oracle and expose the views through Aircloak
-3. __Slow/Uncertain__: Request the addition of the feature
-
----
-
-## Oracle DB Link / DB Gateway
-
-- not yet final, one DB-Link exists but we still have to work out how to do it properly
-
----
-
-## Internal resources
-
-- Internal handbook with learnings
-
-> K:\Business Intelligence Center\02_DATAWAREHOUSING_Team\40 Projects\Anonymisierung\05_Aircloak\13_Handbook
-
----
-
-## Getting help
-
-- Telefonica offers 1st level support (Jira)
-  - DWHI, add component "aircloak"
-- Problems can be escalated to Aircloak (Jira)
-  - please refer to your 1st level support ~(Jira)~ imho Aircloak's JIRA should only be operated by 
-    our 1st level support when you have problems, you can potentially provide a debug report to you 
-    DWH SEs(see next slide)
-
---
-
-### Debug exports
+## Debug exports
 
 Often debug exports are necessary to troubleshoot specific problems.
 A debug export contains:
@@ -1527,6 +1331,98 @@ A debug export contains:
 ![Image](content/images/de-button.png) <!-- .element: style="max-height:600px;border:none;" -->
 
 <!-- -- data-transition="none-in slide-out" --> 
+
+---
+
+## CTAS
+
+- How do they work
+- What is the impact of usage
+
+---
+
+## Configuring Insights Air
+
+- Docs is a good source for looking up configuration toggles
+- Single json config-file
+
+--
+
+## Insights Air config 
+
+```
+{
+  "name": string,
+  "database": ...,
+  "site": ...,
+  "psql_server": ...,
+  "ldap": ...
+}
+```
+
+--
+
+## Insights Air - name
+
+The name allows multiple distinct installations to manage CTAS tables without conflict.
+
+--
+
+## Insight Air - database
+
+Connection parameters to the Postgres database used for:
+
+- meta data 
+- user accounts (even when LDAP is used!)
+- groups and group assignments
+- audit log
+- anonymized query results
+
+--
+
+## Insight Air - site
+
+```json
+"site": {
+  ...
+  "privacy_policy_file": string,
+  "license_file": string,
+  "users_and_datasources_file": string,
+  "browser_long_polling": boolean
+},
+```
+
+Allows automatic deployment of pre-configured systems.
+
+--
+
+## Insight Air - psql_server
+
+- Not to be confused with the `database` parameter
+- Specifies how the built in "Postgres server" behaves
+
+--
+
+## Insight Air - ldap
+
+Enables and configures the LDAP connection
+
+---
+
+## Insights Cloak config
+
+```json
+{
+  "air_site": string,
+  "salt": string,
+  "cloak_secret": string,
+  "data_sources": string,
+  "lcf_buckets_aggregation_limit": integer,
+  "max_parallel_queries": positive_integer,
+  "connection_keep_time": integer,
+  "connection_timeout": integer
+}
+```
 
 ---
 

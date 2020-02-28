@@ -1,7 +1,7 @@
 # Analyst training
 ## Aircloak Insights
 
-Telefonica – March 3rd 2020
+Telefonica – 3rd of March 2020
 
 ---
 
@@ -670,7 +670,6 @@ SELECT
   count(distinct purchases.PurchaseId) as numPurchases
 FROM purchases
 GROUP BY purchases.userId
-
 ```
 
 --
