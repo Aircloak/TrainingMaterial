@@ -920,6 +920,7 @@ Docs are a useful resource.
 - Limited OR functionality
 - No WINDOW function support
 - Some function names differ slightly
+- JOINs
 
 ---
 
@@ -1020,6 +1021,29 @@ Docs are a useful resource.
 |---------------------------|---------------------|
 |       col LIKE 'pattern'  | col  LIKE 'pattern' |
 | LOWER(col) LIKE 'pattern' | col ILIKE 'pattern' |
+
+--
+
+## JOINs 
+
+```SQL
+-- ORACLE join syntax, esp. for outer joins
+    from my_first_table a
+       , my_second_table b
+   where a.my_dt(+) >= to_Date('01082019','DDMMYYYY')
+     and a.my_dt(+) < to_Date('01092019','DDMMYYYY')
+     and b.main_id = 97
+     and b.other_id = 1
+     and a.second_pk(+) = b.second_pk
+-- becomes
+      from my_first_table a
+right join my_second_table b
+        on b.second_pk = a.second_pk
+       and a.my_dt      >= DATE('2019-08-01')
+       and a.my_dt       < DATE('2019-09-01')
+     where b.main_id = 97
+       and b.other_id = 1
+```
 
 ---
 
