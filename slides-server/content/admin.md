@@ -93,7 +93,7 @@ Every item that complicates a system should justify its existence
 - No need to maintain a separate copy of data
 - At the cost of slightly harder query writing experience
 
---
+---
 
 ## Terms and how they differ
 

@@ -116,7 +116,7 @@ Every item that complicates a system should justify its existence
 - Real-time access to work on live production data
 - At the cost of slightly harder query writing experience
 
---
+---
 
 ## Session 1: 
 # Anonymization
