@@ -275,6 +275,10 @@ Details on the configuration files later today.
 
 --
 
+## Starting / stopping Aircloak
+
+--
+
 ## Upgrading and deploying - today
 
 1. Receive `air` and `cloak` container images from Aircloak
@@ -1424,6 +1428,10 @@ Enables and configures the LDAP connection
   "connection_timeout": integer
 }
 ```
+
+---
+
+## Aircloak JIRA
 
 ---
 
