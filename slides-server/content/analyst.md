@@ -500,14 +500,56 @@ Values closer to 0 are more likely.
 
 --
 
-### Low count filter would suppress these
+### How could an aggregate be dangerous?
+
+--
+
+### Aggregates leak information
+
+```sql
+SELECT count(distinct userId)
+FROM users
+```
+
+vs
+
+```sql
+SELECT count(distinct userId)
+FROM users
+WHERE streetAddress <> 'Thorst. 18, apt. 5'
+```
+
+The difference reveals whether or not the inhabitant of the appartment is in our dataset or not.
+
+--
+
+### Aggregates leak information
+
+```sql
+SELECT sum(salary)
+FROM users
+```
+
+vs
+
+```sql
+SELECT sum(salary)
+FROM users
+WHERE position <> 'CEO'
+```
+
+The difference yields the salary of the CEO.
+
+--
+
+### Low count filter would suppress salaries
 
 ![Image](content/images/salaries-2.png) <!-- .element: style="max-height:600px;border:none;" -->
 <!-- -- data-transition="none" -->
 
 --
 
-### Aggregates are different
+### Aggregates are treated differently
 
 ![Image](content/images/salaries-3.png) <!-- .element: style="max-height:600px;border:none;" -->
 <!-- -- data-transition="none" -->
@@ -612,7 +654,7 @@ Values closer to 0 are more likely.
 - Aircloak uses user ids to determine if a group is large enough
 
 --
- 
+
 ## User ids at Telefonica
 
 - What is the user id depends on the data source
@@ -789,6 +831,8 @@ FROM products INNER JOIN lineItems
 
 --
 
+### Non-anonymizing restricted query
+
 ![Image](content/images/query-transformation-1.png) <!-- .element: style="max-height:600px;border:none;" -->
 
 --
@@ -804,6 +848,8 @@ GROUP BY purchases.userId
 ```
 
 --
+
+### Anonymizing restricted query
 
 ![Image](content/images/query-transformation-2.png) <!-- .element: style="max-height:600px;border:none;" -->
 
@@ -872,7 +918,7 @@ FROM products
 
 --
 
-## A restricted query:
+## A restricted query
 
 ```sql
 -- Non-anonymizing restricted query
@@ -910,7 +956,36 @@ GROUP BY
 
 --
 
-## ... within an unrestricted query!
+## An anonymizing query
+
+```sql
+-- Anonymizing query
+SELECT lineItems.productId, count(*) as totalNumPurchases
+FROM lineItems li INNER JOIN purchases p
+  ON li.purchaseId = p.purchaseId
+GROUP BY lineItems.productId
+```
+
+--
+
+## ... within an unrestricted query
+
+```sql
+-- Unrestricted query
+SELECT productId
+FROM (
+  -- Anonymizing query
+  SELECT lineItems.productId, count(*) as totalNumPurchases
+  FROM lineItems li INNER JOIN purchases p
+    ON li.purchaseId = p.purchaseId
+  GROUP BY lineItems.productId
+) productPopularity
+WHERE totalNumPurchases > 100
+```
+
+--
+
+## Combining all three query types
 
 ```sql
 -- Unrestricted query
@@ -1631,6 +1706,14 @@ A debug export contains:
 ![Image](content/images/de-button.png) <!-- .element: style="max-height:600px;border:none;" -->
 
 <!-- -- data-transition="none-in slide-out" --> 
+
+---
+
+## Further reading
+
+- Understanding query results (in docs)
+- Best practises (in docs)
+- https://training.aircloak.net - shows anonymized and non-anonymized results side by side
 
 ---
 
