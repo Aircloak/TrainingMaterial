@@ -612,6 +612,13 @@ Values closer to 0 are more likely.
 - Aircloak uses user ids to determine if a group is large enough
 
 --
+ 
+## User ids at Telefonica
+
+- What is the user id depends on the data source
+- Columns such as `client_id`, `party_id`, `contract_id`, and `vendor_id`
+
+--
 
 ## Types of tables
 
