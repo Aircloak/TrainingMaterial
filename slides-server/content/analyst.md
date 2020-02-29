@@ -142,9 +142,9 @@ Anonymization allows you to not have to argue about legitimate interest or conse
 
 | UserID | Age | Salary | Name    |
 |--------|----:|-------:|---------|
-| 1      | 10  |     0  | Alice   |
-| 2      | 20  | 20000  | Bob     |
-| 3      | 30  | 50000  | Cynthia |
+| 1      | 11  |    10  | Alice   |
+| 2      | 24  | 21000  | Bob     |
+| 3      | 39  | 50300  | Cynthia |
 
 <!-- -- data-transition="none" data-background-transition="none" -->
 
@@ -156,9 +156,9 @@ Anonymization allows you to not have to argue about legitimate interest or conse
 
 | UserID | Age | Salary | Name    | 
 |--------|----:|-------:|---------|
-| A      | 10  |     0  | Alvar   |
-| B      | 20  | 20000  | Borg    |
-| C      | 30  | 50000  | Crantor |
+| A      | 11  |    10  | Alvar   |
+| B      | 24  | 21000  | Borg    |
+| C      | 39  | 50300  | Crantor |
 
 --
 
@@ -309,11 +309,11 @@ If you have fine grained data (like for example a `timestamp`) then every value 
 
 | UserID | BirthTime              |
 |--------|-----------------------:|
-| User 1 | 1980-01-01 12:15:01.02 |
-| User 2 | 1980-02-01 02:21:00.12 |
-| User 3 | 1980-02-01 02:50:05.99 |
+|      1 | 1980-01-01 12:15:01.02 |
+|      2 | 1980-02-01 02:21:00.12 |
+|      3 | 1980-02-01 02:50:05.99 |
 | ...    | ...                    |
-| User N | 1980-12-30 18:30:05.19 |
+|      N | 1980-12-30 18:30:05.19 |
 
 --
 
@@ -411,6 +411,84 @@ The more columns your query includes, the higher the chance
 
 ---
 
+## Interlude - Terminology
+
+--
+
+## Noise
+
+--
+
+<!-- -- data-transition="none" data-background="content/images/ds-without-noise.jpg" -->
+
+## Aspiring data scientists <!-- .element: style="position: absolute; width: 40%; right: 0; box-shadow: 0 1px 4px rgba(0,0,0,0.5), 0 5px 25px rgba(0,0,0,0.2); background-color: rgba(0, 0, 0, 0.9); color: #fff; padding: 20px; font-size: 20px; text-align: left;" -->
+
+--
+
+<!-- -- data-transition="none" data-background="content/images/ds-with-noise.jpg" -->
+
+## Maybe aspiring data scientists <!-- .element: style="position: absolute; width: 40%; right: 0; box-shadow: 0 1px 4px rgba(0,0,0,0.5), 0 5px 25px rgba(0,0,0,0.2); background-color: rgba(0, 0, 0, 0.9); color: #fff; padding: 20px; font-size: 20px; text-align: left;" -->
+
+--
+
+## Noise for numbers
+
+If we say we add a noise of 10 to the value 100, we mean: 
+
+> I will pick a random number between -10 and +10 and add it to 100.
+
+--
+
+## Noise for numbers 
+### Random number
+
+The random number could be:
+
+- -10
+- 4
+- 9
+
+<!-- -- data-transition="slide-in none-out" -->
+
+--
+
+## Noise for numbers 
+### Random number
+
+The random number could be:
+
+- -10 ---> 100 + (-10) = 90
+- 4 ---> 100 + 4 = 104
+- 9 ---> 100 + 9 = 109
+
+<!-- -- data-transition="none-in slide-out" -->
+
+--
+
+## How to choose a random number
+
+The random number must be taken from some distribution
+
+--
+
+## Uniform distribution
+
+Any value between -10 and +10 are equally likely
+
+--
+
+## Gaussian/Normal distribution
+
+Values closer to 0 are more likely.
+
+--
+
+## Gaussian/Normal distribution
+
+![Image](content/images/gaussian-dist.png) <!-- .element: style="max-height:600px;border:none;" -->
+
+---
+
 # Aggregate statistics
 
 --
@@ -471,14 +549,14 @@ The more columns your query includes, the higher the chance
 
 --
 
-### Noise magnitude determined by "heavy" users
+### Noise proportional to "heavy" users
 
 ![Image](content/images/aggregate-noise-2.png) <!-- .element: style="max-height:600px;border:none;" -->
 <!-- -- data-transition="none" -->
 
 --
 
-### Add Gaussian noise
+### Add noise
 
 ![Image](content/images/aggregate-noise-3.png) <!-- .element: style="max-height:600px;border:none;" -->
 <!-- -- data-transition="none" -->
