@@ -88,17 +88,16 @@ Anonymization allows you to not have to argue about legitimate interest or conse
 
 - Anonymization tends to be done on a case-by-case basis
 - The turnaround time from idea to anonymized data can be measured in weeks or months rather than minutes
-- Analyst spend time manually anonymizing data rather than doing analysis
-- Data Protection Officers involuntarily become "bad wolfs" rather than enablers
+- Data scientists spend time anonymizing data rather than doing analysis
+- Data Protection Officer becomes "bad wolf" rather than enabler
 
 --
 
 ## Aircloak
 
-- Data agnostic anonymization
-- Use case agnostic anonymization
+- Data and use case agnostic anonymization
 - Install once, run any query
-- Real-time access to work on live production data
+- Real-time access to production data
 - No need to maintain a separate copy of data
 - At the cost of slightly harder query writing experience
 
@@ -115,9 +114,9 @@ Anonymization allows you to not have to argue about legitimate interest or conse
 
 | UserID | Age | Salary | Name    |
 |--------|----:|-------:|---------|
-| 1      | 10  |     0  | Alice   |
-| 2      | 20  | 20000  | Bob     |
-| 3      | 30  | 50000  | Cynthia |
+| 1      | 11  |    10  | Alice   |
+| 2      | 24  | 21000  | Bob     |
+| 3      | 39  | 50300  | Cynthia |
 
 <!-- -- data-transition="none" data-background-transition="none" -->
 
@@ -129,9 +128,9 @@ Anonymization allows you to not have to argue about legitimate interest or conse
 
 | UserID | Age | Salary | Name    | 
 |--------|----:|-------:|---------|
-| A      | 10  |     0  | Alvar   |
-| B      | 20  | 20000  | Borg    |
-| C      | 30  | 50000  | Crantor |
+| A      | 11  |    10  | Alvar   |
+| B      | 24  | 21000  | Borg    |
+| C      | 39  | 50300  | Crantor |
 
 --
 
@@ -269,7 +268,7 @@ More generally some form of aggregation and distortion:
 ## Infrastructure
 
 - Kubernetes
-- Separate Postgres instance
+- Postgres database instance for Insights Air
 - LDAP
 
 --
@@ -502,14 +501,14 @@ This does not hold true for transaction data:
 --
 
 #### Choosing a user id 
-## Multiple users per row - solution A
+## Multiple users per row - opt. A
 
 The solution today is to split such tables in two such that each half only contains the data belonging to one of the users. Shared data can be made available in all tables.
 
 --
 
 #### Choosing a user id 
-## Multiple users per row - solution B
+## Multiple users per row - opt. B
 
 The solution in the future is to split such tables in multiple parts. 
 Each part contains the data for one of the user, and has the columns containing data about the other users grey-listed.
@@ -673,6 +672,12 @@ Values can also be lists:
 
 - **personal**: require anonymization
 - **non-personal**: usually do not require anonymization
+
+--
+
+non-personal tables become personal if combined with a personal table!
+
+![Image](content/images/tainted.png) <!-- .element: style="max-height:600px;border:none;" -->
 
 --
 
@@ -1109,6 +1114,84 @@ Aircloak can only determine the rows to return after the full anonymization has 
 
 ---
 
+## Interlude - Terminology
+
+--
+
+## Noise
+
+--
+
+<!-- -- data-transition="none" data-background="content/images/ds-without-noise.jpg" -->
+
+## Aspiring data scientists <!-- .element: style="position: absolute; width: 40%; right: 0; box-shadow: 0 1px 4px rgba(0,0,0,0.5), 0 5px 25px rgba(0,0,0,0.2); background-color: rgba(0, 0, 0, 0.9); color: #fff; padding: 20px; font-size: 20px; text-align: left;" -->
+
+--
+
+<!-- -- data-transition="none" data-background="content/images/ds-with-noise.jpg" -->
+
+## Maybe aspiring data scientists <!-- .element: style="position: absolute; width: 40%; right: 0; box-shadow: 0 1px 4px rgba(0,0,0,0.5), 0 5px 25px rgba(0,0,0,0.2); background-color: rgba(0, 0, 0, 0.9); color: #fff; padding: 20px; font-size: 20px; text-align: left;" -->
+
+--
+
+## Noise for numbers
+
+If we say we add a noise of 10 to the value 100, we mean: 
+
+> I will pick a random number between -10 and +10 and add it to 100.
+
+--
+
+## Noise for numbers 
+### Random number
+
+The random number could be:
+
+- -10
+- 4
+- 9
+
+<!-- -- data-transition="slide-in none-out" -->
+
+--
+
+## Noise for numbers 
+### Random number
+
+The random number could be:
+
+- -10 ---> 100 + (-10) = 90
+- 4 ---> 100 + 4 = 104
+- 9 ---> 100 + 9 = 109
+
+<!-- -- data-transition="none-in slide-out" -->
+
+--
+
+## How to choose a random number
+
+The random number must be taken from some distribution
+
+--
+
+## Uniform distribution
+
+Any value between -10 and +10 are equally likely
+
+--
+
+## Gaussian/Normal distribution
+
+Values closer to 0 are more likely.
+
+--
+
+## Gaussian/Normal distribution
+
+![Image](content/images/gaussian-dist.png) <!-- .element: style="max-height:600px;border:none;" -->
+
+---
+
 # Aggregate statistics
 
 --
@@ -1117,6 +1200,48 @@ Aircloak can only determine the rows to return after the full anonymization has 
 
 ![Image](content/images/salaries-1.png) <!-- .element: style="max-height:600px;border:none;" -->
 <!-- -- data-transition="slide-in none-out" -->
+
+--
+
+### How could an aggregate be dangerous?
+
+--
+
+### Aggregates leak information
+
+```sql
+SELECT count(distinct userId)
+FROM users
+```
+
+vs
+
+```sql
+SELECT count(distinct userId)
+FROM users
+WHERE streetAddress <> 'Thorst. 18, apt. 5'
+```
+
+The difference reveals whether or not the inhabitant of the apartment is in our data set or not.
+
+--
+
+### Aggregates leak information
+
+```sql
+SELECT sum(salary)
+FROM users
+```
+
+vs
+
+```sql
+SELECT sum(salary)
+FROM users
+WHERE position <> 'CEO'
+```
+
+The difference yields the salary of the CEO.
 
 --
 
@@ -1169,7 +1294,7 @@ Aircloak can only determine the rows to return after the full anonymization has 
 
 --
 
-### Noise magnitude determined by "heavy" users
+### Noise proportional to "heavy" users
 
 ![Image](content/images/aggregate-noise-2.png) <!-- .element: style="max-height:600px;border:none;" -->
 <!-- -- data-transition="none" -->
@@ -1399,6 +1524,7 @@ Connection parameters to the Postgres database used for:
 ```json
 "site": {
   ...
+  "cloak_secret": secret_string,
   "privacy_policy_file": string,
   "license_file": string,
   "users_and_datasources_file": string,

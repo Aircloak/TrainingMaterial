@@ -112,16 +112,16 @@ Anonymization allows you to not have to argue about legitimate interest or conse
 
 - Anonymization tends to be done on a case-by-case basis
 - The turnaround time from idea to anonymized data can be measured in weeks or months rather than minutes
-- Analyst spend time manually anonymizing data rather than doing analysis
+- Data scientists spend time anonymizing data rather than doing analysis
 
 --
 
 ## Aircloak
 
-- Data agnostic anonymization
-- Use case agnostic anonymization
+- Data and use case agnostic anonymization
 - Install once, run any query
-- Real-time access to work on live production data
+- Real-time access to production data
+- No need to maintain a separate copy of data
 - At the cost of slightly harder query writing experience
 
 ---
