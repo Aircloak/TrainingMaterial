@@ -139,7 +139,7 @@ Anonymization allows you to not have to argue about legitimate interest or conse
 
 In this particular example: 
 
-> There were roughly `3` users in the dataset
+> There were roughly `3` users in the data set
 
 --
 
@@ -258,7 +258,7 @@ More generally some form of aggregation and distortion:
 - No scale-out parallelism at the level of the Insights Cloak
   - Multiple instances to avoid single point of failure
 - Caching intermediate results with CTAS 
-- Reducing dataset (for example `SYSTEM_STACK_ID = X`) for explorative queries
+- Reducing data set (for example `SYSTEM_STACK_ID = X`) for exploratory queries
 
 ---
 
@@ -465,18 +465,18 @@ Example: If you use __Party__ as the source of your user id, then tables at the 
 --
 
 #### Choosing a user id 
-## Hierarchies tradeof
+## Hierarchies tradeoff
 
-Choosing the top-level hierarchy is generally ideal. In practise this hierarchy might be sparcely populated. Aircloak filters out data where the user-id is empty.
+Choosing the top-level hierarchy is generally ideal. In practice this hierarchy might be sparsely populated. Aircloak filters out data where the user-id is empty.
 
-It's a tradeof between which tables can be made available and how much of the data in the exposed tables is available for analysis.
+It's a tradeoff between which tables can be made available and how much of the data in the exposed tables is available for analysis.
 
 --
 
 #### Choosing a user id 
 ## Multiple entity classes
 
-The dataset might contain different classes of entities that should be protected. For example vendors vs clients.
+The data set might contain different classes of entities that should be protected. For example vendors vs clients.
 Aircloak is designed to protect one type of entity.
 
 __OK IFF__: the tables do not overlap or contain data about more than one entity class
@@ -512,7 +512,7 @@ The solution today is to split such tables in two such that each half only conta
 ## Multiple users per row - solution B
 
 The solution in the future is to split such tables in multiple parts. 
-Each part contains the data for one of the user, and has the columns containing data about the other users greylisted.
+Each part contains the data for one of the user, and has the columns containing data about the other users grey-listed.
 
 This will be possible in Aircloak version `20.2`
 
@@ -843,7 +843,7 @@ Personal <!-- .element: class="fragment" -->
 ## Analysis - isolating columns
 
 - Detects if a column a quasi-identifier (i.e. on par with the user id column)
-- Isolating columns underly additional query restrictions
+- Isolating columns underlie additional query restrictions
 
 --
 
@@ -943,7 +943,7 @@ You can manually classify whether a column is isolating or not.
 ## Session 3:
 # Supporting yourself and others
 
-Common mistakes, problems, and gotcha's.
+Common mistakes, problems, and gotchas.
 
 ---
 
@@ -1097,7 +1097,7 @@ Aircloak can only determine the rows to return after the full anonymization has 
 
 ## Accounting for effects of anonymization 
 
-- Identifying information is supressed
+- Identifying information is suppressed
 - Aircloak cannot tell you what this data was
 - We give you an anonymizing estimate of how much data was suppressed
 
@@ -1245,7 +1245,7 @@ FROM items
 GROUP BY item
 ```
 
-- Enough data to reveal that "Car" exists in the dataset
+- Enough data to reveal that "Car" exists in the data set
 - Not enough data to produce a meaningful aggregate of mileage
 
 --
@@ -1261,7 +1261,7 @@ GROUP BY item
 | max(mileage)    | null         |
 | min(mileage)    | null         |
 
-> This property exists in my dataset. But I CANNOT make any statistical assesment of any aggregate properties
+> This property exists in my data set. But I CANNOT make any statistical assessment of any aggregate properties
 
 --
 
@@ -1271,7 +1271,7 @@ The SQL standard doesn't allow `null` as a return value for `count`. We would ne
 
 Read a count of 2 as meaning: 
 
-> This property exists in my dataset. I DO NOT know for how many users.
+> This property exists in my data set. I DO NOT know for how many users.
 
 --
 

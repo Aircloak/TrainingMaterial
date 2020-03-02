@@ -166,7 +166,7 @@ Anonymization allows you to not have to argue about legitimate interest or conse
 
 In this particular example: 
 
-> There were roughly `3` users in the dataset
+> There were roughly `3` users in the data set
 
 --
 
@@ -519,7 +519,7 @@ FROM users
 WHERE streetAddress <> 'Thorst. 18, apt. 5'
 ```
 
-The difference reveals whether or not the inhabitant of the appartment is in our dataset or not.
+The difference reveals whether or not the inhabitant of the apartment is in our data set or not.
 
 --
 
@@ -1257,7 +1257,7 @@ Aircloak can only determine the rows to return after the full anonymization has 
 
 ## Accounting for effects of anonymization 
 
-- Identifying information is supressed
+- Identifying information is suppressed
 - Aircloak cannot tell you what this data was
 - We give you an anonymizing estimate of how much data was suppressed
 
@@ -1287,7 +1287,7 @@ FROM items
 GROUP BY item
 ```
 
-- Enough data to reveal that "Car" exists in the dataset
+- Enough data to reveal that "Car" exists in the data set
 - Not enough data to produce a meaningful aggregate of mileage
 
 --
@@ -1303,7 +1303,7 @@ GROUP BY item
 | max(mileage)    | null         |
 | min(mileage)    | null         |
 
-> This property exists in my dataset. But I CANNOT make any statistical assesment of any aggregate properties
+> This property exists in my data set. But I CANNOT make any statistical assessment of any aggregate properties
 
 --
 
@@ -1313,7 +1313,7 @@ The SQL standard doesn't allow `null` as a return value for `count`. We would ne
 
 Read a count of 2 as meaning: 
 
-> This property exists in my dataset. I DO NOT know for how many users.
+> This property exists in my data set. I DO NOT know for how many users.
 
 --
 
@@ -1359,7 +1359,7 @@ HAVING count(*) / count_noise(*) > 10
 
 ## Working with freeform text
 
-User provided text could be considered as a relatively strong pseudorandom numbger generator...
+User provided text could be considered as a relatively strong pseudorandom number generator...
 
 ```sql
 SELECT freetextColumn, ...
@@ -1408,7 +1408,7 @@ WHERE freetextColumn ILIKE '%thank you%'
 
 --
 
-## Building co-horts
+## Building cohorts
 
 ```sql
 SELECT some, columns, aggregates(...)
