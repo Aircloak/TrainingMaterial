@@ -1571,7 +1571,7 @@ https://download.aircloak.com/analyst-training/
 ## Where is the data?
 
 - URL: https://demo.aircloak.com
-- Username: your email address
+- Login: “f.lastname” (e.g. a.mueller). (ä -> ae and so on)
 - Password: `telefonica1234`
 
 --
