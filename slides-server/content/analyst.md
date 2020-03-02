@@ -111,8 +111,8 @@ Anonymization allows you to not have to argue about legitimate interest or conse
 ## Anonymization is difficult
 
 - Anonymization tends to be done on a case-by-case basis
-- The turnaround time from idea to can be in weeks or months rather than minutes
-- Analyst spend time manually anonymizing data rather than do analysis
+- The turnaround time from idea to anonymized data can be measured in weeks or months rather than minutes
+- Analyst spend time manually anonymizing data rather than doing analysis
 
 --
 
@@ -778,6 +778,7 @@ Not allowed:
 SELECT products.productName, count(*)
 FROM products INNER JOIN lineItems
   ON products.productId = lineItems.productId
+GROUP BY products.productName
 ```
 
 --
@@ -792,6 +793,7 @@ FROM products INNER JOIN lineItems
   ON products.productId = lineItems.productId
   INNER JOIN purchases 
   ON lineItems.purchaseId = purchases.purchaseId 
+GROUP BY products.productName
 ```
 
 ---
@@ -823,7 +825,7 @@ FROM products INNER JOIN lineItems
 ## Why do I need to know
 
 - Knowing when anonymization takes place is important for good query results
-- Unrestricted queries do not underly Aircloak query restrictions
+- Unrestricted queries are not subject to Aircloak query restrictions
 
 --
 
@@ -1524,7 +1526,7 @@ Similarly dates are also snapped to a 1, 2, 5 grid.
 
 After the break we will have a practical session.
 
-First to solve the task wins a Grand Price!
+First to solve the task wins a Grand Prize!
 
 ---
 
@@ -1712,7 +1714,7 @@ A debug export contains:
 ## Further reading
 
 - Understanding query results (in docs)
-- Best practises (in docs)
+- Best practices (in docs)
 - https://training.aircloak.net - shows anonymized and non-anonymized results side by side
 
 ---

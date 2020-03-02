@@ -87,7 +87,8 @@ Anonymization allows you to not have to argue about legitimate interest or conse
 ## Anonymization is difficult
 
 - Anonymization tends to be done on a case-by-case basis
-- The turnaround time from idea to data tends to be in weeks or months rather than minutes
+- The turnaround time from idea to anonymized data can be measured in weeks or months rather than minutes
+- Analyst spend time manually anonymizing data rather than doing analysis
 - Data Protection Officers involuntarily become "bad wolfs" rather than enablers
 
 --
