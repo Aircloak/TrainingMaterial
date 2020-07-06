@@ -9,7 +9,7 @@ Before we start
 
 --
 
-## Aircloak 
+## Aircloak
 
 - is an SQL query proxy <!-- .element: class="fragment"-->
 - performs dynamic anonymization at runtime <!-- .element: class="fragment"-->
@@ -83,7 +83,7 @@ Anonymization allows you to not have to argue about legitimate interest or conse
 
 ---
 
-## Session 1: 
+## Session 1:
 # Anonymization
 
 ---
@@ -111,7 +111,7 @@ Anonymization allows you to not have to argue about legitimate interest or conse
 
 ### Pseudonymized data
 
-| UserID | Age | Salary | Name    | 
+| UserID | Age | Salary | Name    |
 |--------|----:|-------:|---------|
 | A      | 11  |    10  | Alvar   |
 | B      | 24  | 21000  | Borg    |
@@ -121,7 +121,7 @@ Anonymization allows you to not have to argue about legitimate interest or conse
 
 ### Anonymization
 
-In this particular example: 
+In this particular example:
 
 > There were roughly `3` users in the data set
 
@@ -131,7 +131,7 @@ In this particular example:
 
 More generally some form of aggregation and distortion:
 
-| Age | Salary | Name | Noisy count | 
+| Age | Salary | Name | Noisy count |
 |----:|-------:|------|------------:|
 | 10  |     0  | *    |         250 |
 | 12  |     0  | *    |         201 |
@@ -220,8 +220,8 @@ You can hide in a crowd!
 
 --
 
-### Quiz 1 
-#### Is "Mega clean 2000" ok to reveal? 
+### Quiz 1
+#### Is "Mega clean 2000" ok to reveal?
 
 | UserID | Product         |
 |-------:|-----------------|
@@ -239,7 +239,7 @@ No. Only a single person bought the product. There is no crowd to hide in.
 --
 
 ### Quiz 2
-#### Is "Mega clean 2000" ok to reveal? 
+#### Is "Mega clean 2000" ok to reveal?
 
 | UserID | Product         |
 |-------:|-----------------|
@@ -306,7 +306,7 @@ If you have fine grained data (like for example a `timestamp`) then every value 
 
 ## What happens if we add a second category of values?
 
-- `(BirthTime, Gender)` 
+- `(BirthTime, Gender)`
 - It is more specific
 - The resulting groups are smaller
 
@@ -316,12 +316,12 @@ If you have fine grained data (like for example a `timestamp`) then every value 
 
 --
 
-## Tradeoff 
+## Tradeoff
 ### More columns, less results
 
 --
 
-## Tradeoff 
+## Tradeoff
 ### More columns, less results
 
 `(zip-code, date of birth, gender)` uniquely identifies 67% of all US citizens (of which there are 329 million)!
@@ -350,7 +350,7 @@ If you have fine grained data (like for example a `timestamp`) then every value 
 
 | Is our customer | Gender | BirthTime              |
 |:----------------|--------|-----------------------:|
-| True            | M      | 1980-01-01 12:15:01.02 | 
+| True            | M      | 1980-01-01 12:15:01.02 |
 | True            | M      | 1980-02-01 02:21:00.12 |
 | True            | F      | 1980-02-01 02:50:05.99 |
 | True            | ...    | ...                    |
@@ -378,13 +378,13 @@ The more columns your query includes, the higher the chance
 
 ## Noise for numbers
 
-If we say we add a noise of 10 to the value 100, we mean: 
+If we say we add a noise of 10 to the value 100, we mean:
 
 > I will pick a random number between -10 and +10 and add it to 100.
 
 --
 
-## Noise for numbers 
+## Noise for numbers
 ### Random number
 
 The random number could be:
@@ -397,7 +397,7 @@ The random number could be:
 
 --
 
-## Noise for numbers 
+## Noise for numbers
 ### Random number
 
 The random number could be:
@@ -730,8 +730,8 @@ Allowed:
 SELECT products.productName, count(*)
 FROM products INNER JOIN lineItems
   ON products.productId = lineItems.productId
-  INNER JOIN purchases 
-  ON lineItems.purchaseId = purchases.purchaseId 
+  INNER JOIN purchases
+  ON lineItems.purchaseId = purchases.purchaseId
 GROUP BY products.productName
 ```
 
@@ -781,8 +781,8 @@ GROUP BY products.productName
 ### Non-anonymizing restricted query
 
 ```sql
-SELECT 
-  purchases.userId, 
+SELECT
+  purchases.userId,
   count(distinct purchases.PurchaseId) as numPurchases
 FROM purchases
 GROUP BY purchases.userId
@@ -810,7 +810,7 @@ FROM purchases
 --
 
 ### Restricted query
-## Anonymizing 
+## Anonymizing
 
 - A query that **aggregates or groups** across multiple distinct users
 
@@ -823,7 +823,7 @@ GROUP BY users.name
 --
 
 ### Restricted query
-## Non-anonymizing 
+## Non-anonymizing
 
 - Only useful as sub-queries!
 - Aircloak will try to anonymize the results if it is the top-level query
@@ -831,7 +831,7 @@ GROUP BY users.name
 --
 
 ### Restricted query
-## Non-anonymizing 
+## Non-anonymizing
 
 - Operates on the data of a single user
 
@@ -845,12 +845,12 @@ GROUP BY purchases.UserId
 
 ## Unrestricted queries
 
-- A query that operates on non-personal data 
+- A query that operates on non-personal data
 - A query that operates on an already anonymous result
 
 ```sql
 SELECT products.productName
-FROM products 
+FROM products
 ```
 
 --
@@ -875,9 +875,9 @@ GROUP BY purchases.userId, lineItems.productId
 
 ```sql
 -- Anonymizing restricted query
-SELECT 
-  perUser.productId, 
-  perUser.numPurchases, 
+SELECT
+  perUser.productId,
+  perUser.numPurchases,
   count(*)
 FROM (
   -- Non-anonymizing restricted query
@@ -887,7 +887,7 @@ FROM (
   GROUP BY purchases.userId, lineItems.productId
 ) as perUser
 GROUP BY
-  perUser.productId, 
+  perUser.productId,
   perUser.numPurchases
 ```
 
@@ -933,9 +933,9 @@ WHERE totalNumPurchases > 100
 SELECT anonResult.productId
 FROM (
   -- Anonymizing restricted query
-  SELECT 
-    perUser.productId, 
-    perUser.numPurchases, 
+  SELECT
+    perUser.productId,
+    perUser.numPurchases,
     count(*)
   FROM (
     -- Non-anonymizing restricted query
@@ -945,7 +945,7 @@ FROM (
     GROUP BY purchases.userId, lineItems.productId
   ) as perUser
   GROUP BY
-    perUser.productId, 
+    perUser.productId,
     perUser.numPurchases
 ) anonResult
 HAVING SUM(anonResult.numPurchases) * SUM(anonResult.count) > 100
@@ -976,7 +976,7 @@ FROM products
 
 --
 
-## Anonymizing or non-anonymizing 
+## Anonymizing or non-anonymizing
 
 ```sql
 SELECT count(purchases.UserId)
@@ -1011,7 +1011,7 @@ GROUP BY purchases.userId
 
 ---
 
-## Session 2: 
+## Session 2:
 # Querying with Aircloak
 
 ---
@@ -1024,7 +1024,7 @@ Docs are a useful resource.
 
 ---
 
-## Differences to Oracle 
+## Differences to Oracle
 
 - Limited OR functionality
 - No WINDOW function support
@@ -1035,7 +1035,7 @@ Docs are a useful resource.
 
 ## Differences to Oracle - truncation of timestamps
 
-- `date_trunc` for truncating for dates and times 
+- `date_trunc` for truncating for dates and times
 
 | Oracle                  | Aircloak                 |
 |-------------------------|--------------------------|
@@ -1113,7 +1113,7 @@ Docs are a useful resource.
 
 --
 
-## Differences to Oracle 
+## Differences to Oracle
 
 | Oracle      | Aircloak |
 |-------------|----------|
@@ -1133,7 +1133,7 @@ Docs are a useful resource.
 
 --
 
-## JOINs 
+## JOINs
 
 ```SQL
 -- ORACLE join syntax, esp. for outer joins
@@ -1163,7 +1163,7 @@ SELECT * FROM table
 ```
 
 <span class="fragment">
-Remember: Aircloak suppresses column combinations that aren't shared by sufficiently many users. With `SELECT *` all rows end up identifying 
+Remember: Aircloak suppresses column combinations that aren't shared by sufficiently many users. With `SELECT *` all rows end up identifying
 </span>
 <!-- -- data-transition="slide-in none-out" -->
 
@@ -1194,7 +1194,7 @@ Aircloak can only determine the rows to return after the full anonymization has 
 
 ---
 
-## Accounting for effects of anonymization 
+## Accounting for effects of anonymization
 
 - Identifying information is suppressed
 - Aircloak cannot tell you what this data was
@@ -1250,7 +1250,7 @@ GROUP BY item
 
 The SQL standard doesn't allow `null` as a return value for `count`. We would never report something that was not at the _very least_ shared by two or more users.
 
-Read a count of 2 as meaning: 
+Read a count of 2 as meaning:
 
 > This property exists in my data set. I DO NOT know for how many users.
 
@@ -1340,7 +1340,7 @@ GROUP BY ...
 ## Building cohorts
 
 ```sql
-SELECT DISTINCT userId 
+SELECT DISTINCT userId
 FROM table
 WHERE freetextColumn ILIKE '%thank you%'
 ```
@@ -1352,7 +1352,7 @@ WHERE freetextColumn ILIKE '%thank you%'
 ```sql
 SELECT some, columns, aggregates(...)
 FROM table INNER JOIN (
-  SELECT DISTINCT userId 
+  SELECT DISTINCT userId
   FROM table
   WHERE freetextColumn ILIKE '%thank you%'
 ) thankfulUsers ON table.userId = thankfulUsers.userId
@@ -1361,14 +1361,14 @@ GROUP BY ...
 
 --
 
-## Extract common logic 
+## Extract common logic
 
 - into views
 - into table ("create table as select")
 
 --
 
-## Extract common logic 
+## Extract common logic
 
 # Demo
 
@@ -1418,7 +1418,7 @@ WHERE age > 10
 - Column inequalities are allowed
 
 ```sql
--- Allowed - no constant 
+-- Allowed - no constant
 WHERE salary < age
 ```
 
@@ -1473,14 +1473,14 @@ First to solve the task wins a Grand Prize!
 
 ---
 
-## Session 3: 
+## Session 3:
 # Practical session!
 
 ---
 
 ## Scenario
 
-- We are data scientists at Berka Bank 
+- We are data scientists at Berka Bank
 - We want to figure out:
   - Which customer group brings in the most revenue as a group
   - Which customer group brings in the most revenue per member
@@ -1524,7 +1524,7 @@ https://download.aircloak.com/analyst-training/
 
 --
 
-## Solution walk-through 
+## Solution walk-through
 
 ---
 
@@ -1572,7 +1572,7 @@ WHERE age > 10
 - Column inequalities are allowed
 
 ```sql
--- Allowed - no constant 
+-- Allowed - no constant
 WHERE salary < age
 ```
 
@@ -1619,7 +1619,7 @@ Similarly dates are also snapped to a 1, 2, 5 grid.
 
 ---
 
-## Session 4: 
+## Session 4:
 # Practical details
 
 ---
@@ -1640,7 +1640,7 @@ A debug export contains:
 
 ![Image](content/images/de-menu.png) <!-- .element: style="max-height:600px;border:none;" -->
 
-<!-- -- data-transition="slide-in none-out" --> 
+<!-- -- data-transition="slide-in none-out" -->
 
 --
 
@@ -1648,7 +1648,7 @@ A debug export contains:
 
 ![Image](content/images/de-settings-pre.png) <!-- .element: style="max-height:600px;border:none;" -->
 
-<!-- -- data-transition="none" --> 
+<!-- -- data-transition="none" -->
 
 --
 
@@ -1656,7 +1656,7 @@ A debug export contains:
 
 ![Image](content/images/de-settings-post.png) <!-- .element: style="max-height:600px;border:none;" -->
 
-<!-- -- data-transition="none" --> 
+<!-- -- data-transition="none" -->
 
 --
 
@@ -1664,7 +1664,7 @@ A debug export contains:
 
 ![Image](content/images/de-button.png) <!-- .element: style="max-height:600px;border:none;" -->
 
-<!-- -- data-transition="none-in slide-out" --> 
+<!-- -- data-transition="none-in slide-out" -->
 
 ---
 
