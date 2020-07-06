@@ -1,44 +1,6 @@
 # Analyst training
 ## Aircloak Insights
 
-Telefonica – 3rd of March 2020
-
----
-
-# Agenda
-
-1. Anonymization
-1. Querying with Aircloak
-1. Practical session
-1. Telefonica specific details
-
---
-
-## Sessions
-
-- Start on the hour
-- Each session takes ~45 minutes
-- 15 minute break between sessions
-
----
-
-## Introductions
-
---
-
-## We are
-
-- Felix 
-- Sebastian 
-
---
-
-## You are
-
-Quick round. What is your:
-- name
-- role
-
 ---
 
 Before we start
@@ -83,21 +45,16 @@ Before we start
 
 --
 
-## What value does it bring?
-
-Every item that complicates a system should justify its existence
-
---
-
 ## Gaining access to data
 
 - Data protection is important – yet difficult
-- Alternatives are:
-  - Legitimate interest
-  - Performance of contract
-  - Explicitly given informed consent
+- Not an alternative:
   - Not working with data
   - Breaking the law
+- Alternatives are:
+  - Legitimate interest
+    - Performance of contract
+  - Explicitly given informed consent
   - Anonymizing data
 
 --
@@ -419,18 +376,6 @@ The more columns your query includes, the higher the chance
 
 --
 
-<!-- -- data-transition="none" data-background="content/images/ds-without-noise.jpg" -->
-
-## Aspiring data scientists <!-- .element: style="position: absolute; width: 40%; right: 0; box-shadow: 0 1px 4px rgba(0,0,0,0.5), 0 5px 25px rgba(0,0,0,0.2); background-color: rgba(0, 0, 0, 0.9); color: #fff; padding: 20px; font-size: 20px; text-align: left;" -->
-
---
-
-<!-- -- data-transition="none" data-background="content/images/ds-with-noise.jpg" -->
-
-## Maybe aspiring data scientists <!-- .element: style="position: absolute; width: 40%; right: 0; box-shadow: 0 1px 4px rgba(0,0,0,0.5), 0 5px 25px rgba(0,0,0,0.2); background-color: rgba(0, 0, 0, 0.9); color: #fff; padding: 20px; font-size: 20px; text-align: left;" -->
-
---
-
 ## Noise for numbers
 
 If we say we add a noise of 10 to the value 100, we mean: 
@@ -471,12 +416,6 @@ The random number must be taken from some distribution
 
 --
 
-## Uniform distribution
-
-Any value between -10 and +10 are equally likely
-
---
-
 ## Gaussian/Normal distribution
 
 Values closer to 0 are more likely.
@@ -497,6 +436,13 @@ Values closer to 0 are more likely.
 
 ![Image](content/images/salaries-1.png) <!-- .element: style="max-height:600px;border:none;" -->
 <!-- -- data-transition="slide-in none-out" -->
+
+--
+
+### Low count filter would suppress salaries
+
+![Image](content/images/salaries-2.png) <!-- .element: style="max-height:600px;border:none;" -->
+<!-- -- data-transition="none" -->
 
 --
 
@@ -542,10 +488,10 @@ The difference yields the salary of the CEO.
 
 --
 
-### Low count filter would suppress salaries
+### A histogram of salaries
 
-![Image](content/images/salaries-2.png) <!-- .element: style="max-height:600px;border:none;" -->
-<!-- -- data-transition="none" -->
+![Image](content/images/salaries-1.png) <!-- .element: style="max-height:600px;border:none;" -->
+<!-- -- data-transition="slide-in none-out" -->
 
 --
 
@@ -652,13 +598,6 @@ The difference yields the salary of the CEO.
 
 - Aircloak builds groups to allow individuals to hide
 - Aircloak uses user ids to determine if a group is large enough
-
---
-
-## User ids at Telefonica
-
-- What is the user id depends on the data source
-- Columns such as `client_id`, `party_id`, `contract_id`, and `vendor_id`
 
 --
 
@@ -1398,7 +1337,7 @@ GROUP BY ...
 
 --
 
-## Building co-horts
+## Building cohorts
 
 ```sql
 SELECT DISTINCT userId 
@@ -1568,14 +1507,6 @@ https://download.aircloak.com/analyst-training/
 
 --
 
-## Where is the data?
-
-- URL: https://demo.aircloak.com
-- Login: “f.lastname” (e.g. a.mueller). (ä -> ae and so on)
-- Password: `telefonica1234`
-
---
-
 ## Data model + task
 
 <div>
@@ -1597,7 +1528,94 @@ https://download.aircloak.com/analyst-training/
 
 ---
 
-# Break
+## Restrictions
+
+- All restrictions for anonymization purposes
+- Over time some might be removed or softened.
+- Restrictions only apply in anonymizing and restricted queries.
+
+--
+
+## Most commonly noticed restrictions
+
+- OR-functionality
+- Ranges
+
+--
+
+## OR-functionality
+
+- heavily restricted
+- support for `IN` in the `WHERE`-clause
+- support for simplified `CASE`-statements
+  - inside aggregate in the anonymizing query
+  - as selected column in the anonymizing query
+
+--
+
+## Ranges
+
+- Ranges containing constants must be bounded
+
+```sql
+-- Allowed - bounded
+WHERE age BETWEEN 10 and 20
+
+-- Not allowed - not bounded
+WHERE age > 10
+```
+
+--
+
+## Ranges
+
+- Column inequalities are allowed
+
+```sql
+-- Allowed - no constant 
+WHERE salary < age
+```
+
+--
+
+## Ranges - snapping
+
+- Range boundaries must fall on a grid "1, 2, 5"-grid
+
+--
+
+## Ranges - snapping - 1, 2, 5
+
+Allowed values:
+- ..., 0.1, 0.2, 0.5, 1, 2, 5, 10, 20, 50, 100, 200, 500, ...
+
+--
+
+## Ranges - snapping - 1, 2, 5
+
+```sql
+WHERE age BETWEEN 11 and 19
+```
+
+becomes
+
+```sql
+WHERE age BETWEEN 10 and 20
+```
+
+--
+
+## Ranges - snapping - 1, 2, 5
+
+Similarly dates are also snapped to a 1, 2, 5 grid.
+
+--
+
+## Full list of restrictions are in the documentation
+
+---
+
+# Coffee break
 
 ---
 
@@ -1605,67 +1623,6 @@ https://download.aircloak.com/analyst-training/
 # Practical details
 
 ---
-
-## Telefonica's Aircloak instance
-
-- Web interface: http://demucdnhkm01.dcn.de.pri.o2.com:30080
-- Postgres interface: demucdnhkm01.dcn.de.pri.o2.com:300801
-  - See sample Python notebook from practical session
-  - https://download.aircloak.com/analyst-training/
-- Documentation: http://demucdnhkm01.dcn.de.pri.o2.com:30080/docs
-
----
-
-## How do I get access
-
-1. Open a JIRA request in DWH Services Infrastructure (DWHI) stating the names of the data sources
-2. "Grant access to aircloak"
-3. Add component "aircloak"
-
----
-
-## I need other data, what to do
-
-1. Open a JIRA request in DWH Services Infrastructure (DWHI) stating the DBMS object names
-2. "Include objects into Aircloak",
-3. Add component "aircloak"
-
----
-
-## I need a specific feature
-
-There are three ways working around missing features
-
-1. __Fast__: Sometimes it's a matter of reformulating the query
-2. __Medium__: Create views in Oracle and expose the views through Aircloak
-3. __Slow/Uncertain__: Request the addition of the feature
-
----
-
-## Oracle DB Link / DB Gateway
-
-- not yet final, one DB-Link exists but we still have to work out how to do it properly
-
----
-
-## Internal resources
-
-- Internal handbook with learnings
-
-> K:\Business Intelligence Center\02_DATAWAREHOUSING_Team\40 Projects\Anonymisierung\05_Aircloak\13_Handbook
-
----
-
-## Getting help
-
-- Telefonica offers 1st level support (Jira)
-  - DWHI, add component "aircloak"
-- Problems can be escalated to Aircloak (Jira)
-  - please refer to your 1st level support ~(Jira)~ imho Aircloak's JIRA should only be operated by 
-    our 1st level support when you have problems, you can potentially provide a debug report to you 
-    DWH SEs(see next slide)
-
---
 
 ### Debug exports
 
